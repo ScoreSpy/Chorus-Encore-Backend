@@ -30,26 +30,30 @@ export type ChorusIni = {
   year?: string
 }
 
-export default function parseIni (ini: Buffer): ChorusIni | null {
+function parse (ini: Buffer): ChorusIni | null {
+  let source = Iconv.decode(ini, 'utf8')
+
+  if (source.indexOf('�') > -1) { source = Iconv.decode(ini, 'latin-1') }
+  if (source.indexOf('\u0000') > -1) { source = Iconv.decode(ini, 'utf16') }
+
+  return source.split('\n').
+    reduce((meta, line) => {
+      // eslint-disable-next-line prefer-named-capture-group
+      const [, param, value] = line.match(/([^=]+)=(.+)/u) || []
+
+      if (!value || !value.trim() || fieldBlacklist[param]) { return meta }
+
+      // eslint-disable-next-line prefer-named-capture-group
+      return Object.assign(meta, { [param.trim()]: value.trim().replace(/<[^>]*(b|i|color|size|material|quad)[^>]*>/ug, '') })
+    }, {})
+}
+
+export default function parseIni (midiFile: Buffer): ChorusIni | null {
   try {
-    let source = Iconv.decode(ini, 'utf8')
-
-    if (source.indexOf('�') > -1) { source = Iconv.decode(ini, 'latin-1') }
-    if (source.indexOf('\u0000') > -1) { source = Iconv.decode(ini, 'utf16') }
-
-    return source.split('\n').
-      reduce((meta, line) => {
-        // eslint-disable-next-line prefer-named-capture-group
-        const [, param, value] = line.match(/([^=]+)=(.+)/u) || []
-
-        if (!value || !value.trim() || fieldBlacklist[param]) { return meta }
-
-        // eslint-disable-next-line prefer-named-capture-group
-        return Object.assign(meta, { [param.trim()]: value.trim().replace(/<[^>]*(b|i|color|size|material|quad)[^>]*>/ug, '') })
-      }, {})
+    return parse(midiFile)
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.error(err.stack)
+    console.error(err.stack || err)
     return null
   }
 }
