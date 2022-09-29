@@ -8,7 +8,7 @@ import v1Handler from './routes/api/v1/'
 
 const log = logger.createContext('server')
 
-async function bottledWasHere() {
+async function bottledWasHere () {
   const server = fastify({ trustProxy: true, bodyLimit: 1048576 * 50, maxParamLength: Number.MAX_SAFE_INTEGER })
 
   server.addHook('onResponse', (request, reply, done) => {
@@ -48,9 +48,7 @@ async function bottledWasHere() {
         schemes: ['https'],
         consumes: ['application/json'],
         produces: ['application/json'],
-        tags: [
-          { name: 'Internal', description: '/api/v1/internal' },
-        ]
+        tags: [{ name: 'Internal', description: '/api/v1/internal' }]
       }
     })
   }

@@ -10,7 +10,8 @@ async function startApplication () {
   server = await createServer()
 
   const address = await server.listen({ port: PORT, host: WebConfig.host })
-  console.log(`server listening on ${address}`)
+
+  console.log(`server listening on ${address}`) // eslint-disable-line no-console
 }
 
 startApplication()

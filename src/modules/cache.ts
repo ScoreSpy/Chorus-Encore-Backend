@@ -8,7 +8,7 @@ class Cache {
 
   constructor () {
     this.data = {
-      maintenanceEnabled: this.createInstance('maintenanceEnabled', false),
+      maintenanceEnabled: this.createInstance('maintenanceEnabled', false)
     }
   }
 
