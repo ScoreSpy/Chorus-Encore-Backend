@@ -61,29 +61,29 @@ export type ChorusDiffMap = {
 }
 
 export type ChorusChartMeta = {
-  Name: string;
-  Artist: string;
-  Charter: string;
-  Year: string;
-  Offset: string;
+  Name?: string;
+  Artist?: string;
+  Charter?: string;
+  Year?: string;
+  Offset?: string;
   Resolution: number;
-  Player2: string;
-  Difficulty: string;
-  PreviewStart: string;
-  PreviewEnd: string;
-  Genre: string;
-  MediaType: string;
-  MusicStream: string;
+  Player2?: string;
+  Difficulty?: string;
+  PreviewStart?: string;
+  PreviewEnd?: string;
+  Genre?: string;
+  MediaType?: string;
+  MusicStream?: string;
   length: number;
   effectiveLength: number;
-  Album: string;
-  GuitarStream: string;
-  ArtistText: string;
-  CountOff: string;
-  GuitarVol: string;
-  BandVol: string;
-  HoPo: string;
-  OriginalArtist: string;
+  Album?: string;
+  GuitarStream?: string;
+  ArtistText?: string;
+  CountOff?: string;
+  GuitarVol?: string;
+  BandVol?: string;
+  HoPo?: string;
+  OriginalArtist?: string;
 }
 
 export type ChorusChart = {
@@ -146,8 +146,12 @@ export default function parseChart (chart: Buffer): ChorusChart | null {
 
   const sections = []
 
-  const chartData = {
-    chartMeta: {},
+  const chartData: ChorusChart = {
+    chartMeta: {
+      Resolution: -1,
+      length: -1,
+      effectiveLength: -1
+    },
     hasStarPower: false,
     hasForced: false,
     hasTap: false,
@@ -160,8 +164,9 @@ export default function parseChart (chart: Buffer): ChorusChart | null {
     hashes: {
       file: createMD5(chartBuffer)
     },
-    is120: false
-  } as ChorusChart
+    is120: false,
+    hasBrokenNotes: false
+  }
 
   try {
     const utf8 = Iconv.decode(chartBuffer, 'utf8')
