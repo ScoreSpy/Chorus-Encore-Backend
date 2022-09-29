@@ -5,8 +5,6 @@ import logger from './modules/log'
 import { Getters } from './modules/helpers'
 import prometheus from './modules/prometheus'
 import v1Handler from './routes/api/v1/'
-import fs from 'fs/promises'
-import parser from './modules/parsers/midi'
 
 const log = logger.createContext('server')
 
@@ -60,23 +58,6 @@ async function bottledWasHere () {
   await cache.init()
 
   server.register(v1Handler, { prefix: '/api/v1' })
-
-  const files = await fs.readdir('C:\\Users\\Ahriana\\Documents\\Projects\\ScoreSpy\\chorus\\tests\\mids')
-  console.log(files)
-  const outputs = []
-
-  for (const file in files) {
-    if (!file) { continue }
-    console.log(file)
-    try {
-      outputs.push(parser(await fs.readFile(`C:\\Users\\Ahriana\\Documents\\Projects\\ScoreSpy\\chorus\\tests\\mids\\${files[file]}`)))
-    } catch (error) {
-      console.error(error)
-    }
-    
-  }
-
-  console.log(JSON.stringify(outputs, null, 4))
 
   return server
 }

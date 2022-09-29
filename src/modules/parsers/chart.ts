@@ -2,6 +2,9 @@
 
 import Iconv from 'iconv-lite'
 import { createMD5 } from './../helpers'
+import logger from './../log'
+
+const log = logger.createContext('parser/chart')
 
 // To avoid people overwriting useful metadata
 const fieldBlacklist = {
@@ -417,8 +420,7 @@ export default function parseChart (midiFile: Buffer): ChorusChart | null {
   try {
     return parse(midiFile)
   } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error(err.stack || err)
+    log.error(err)
     return null
   }
 }

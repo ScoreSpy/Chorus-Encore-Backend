@@ -2,6 +2,9 @@
 
 import MIDIFile from 'midifile'
 import { createMD5 } from './../helpers'
+import logger from './../log'
+
+const log = logger.createContext('parser/midi')
 
 const partMap = {
   'PART GUITAR': 'guitar',
@@ -261,8 +264,7 @@ export default function parseMidi (midiFile: Buffer) {
   try {
     return parse(midiFile)
   } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error(err.stack || err)
+    log.error(err)
     return null
   }
 }

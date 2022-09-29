@@ -1,6 +1,9 @@
 // Ported and updated from https://github.com/Paturages/chorus/blob/master/src/utils/meta/ini.js with permission from Paturages
 
 import Iconv from 'iconv-lite'
+import logger from './../log'
+
+const log = logger.createContext('parser/ini')
 
 const fieldBlacklist = {
   link: true,
@@ -54,8 +57,7 @@ export default function parseIni (midiFile: Buffer): ChorusIni | null {
   try {
     return parse(midiFile)
   } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error(err.stack || err)
+    log.error(err)
     return null
   }
 }
