@@ -1,3 +1,5 @@
+// Ported and updated from https://github.com/Paturages/chorus/blob/master/src/utils/meta/chart.js with permission from Paturages
+
 import Iconv from 'iconv-lite'
 import { createMD5 } from './../helpers'
 

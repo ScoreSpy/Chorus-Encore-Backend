@@ -1,3 +1,5 @@
+// Ported and updated from https://github.com/Paturages/chorus/blob/master/src/utils/meta/ini.js with permission from Paturages
+
 import Iconv from 'iconv-lite'
 
 const fieldBlacklist = {

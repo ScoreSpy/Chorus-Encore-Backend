@@ -1,3 +1,5 @@
+// Ported and updated from https://github.com/Paturages/chorus/blob/master/src/utils/meta/midi.js with permission from Paturages
+
 import MIDIFile from 'midifile'
 import { createMD5 } from './../helpers'
 
