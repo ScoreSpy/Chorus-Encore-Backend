@@ -1,8 +1,9 @@
 // Ported and updated from https://github.com/Paturages/chorus/blob/master/src/utils/meta/chart.js with permission from Paturages
 
-import Iconv from 'iconv-lite'
 import { createMD5 } from './../helpers'
+import Iconv from 'iconv-lite'
 import logger from './../log'
+import type { ChorusDiffMapBoolean, ChorusDiffMapNumber, ChorusDiffMapString } from './../../types'
 
 const log = logger.createContext('parser/chart')
 
@@ -57,27 +58,6 @@ const diffMap = {
  * and 7 for open notes
  */
 const notesMap = { 0: 1, 1: 2, 2: 3, 3: 4, 4: 5, 8: 6, 7: 7 }
-
-export type ChorusDiffMapString = {
-  x: string;
-  h: string;
-  m: string;
-  e: string;
-}
-
-export type ChorusDiffMapNumber = {
-  x: number;
-  h: number;
-  m: number;
-  e: number;
-}
-
-export type ChorusDiffMapBoolean = {
-  x: boolean;
-  h: boolean;
-  m: boolean;
-  e: boolean;
-}
 
 export type ChorusChartMeta = {
   Name?: string;

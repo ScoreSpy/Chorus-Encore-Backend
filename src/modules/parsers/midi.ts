@@ -1,8 +1,9 @@
 // Ported and updated from https://github.com/Paturages/chorus/blob/master/src/utils/meta/midi.js with permission from Paturages
 
-import MIDIFile from 'midifile'
 import { createMD5 } from './../helpers'
 import logger from './../log'
+import MIDIFile from 'midifile'
+import type { ChorusDiffMapBoolean, ChorusDiffMapNumber, ChorusDiffMapString } from './../../types'
 
 const log = logger.createContext('parser/midi')
 
@@ -18,27 +19,6 @@ const partMap = {
 }
 // eslint-disable-next-line id-length
 const diffOffsets = { e: 59, m: 71, h: 83, x: 95 }
-
-export type ChorusDiffMapString = {
-  x: string;
-  h: string;
-  m: string;
-  e: string;
-}
-
-export type ChorusDiffMapNumber = {
-  x: number;
-  h: number;
-  m: number;
-  e: number;
-}
-
-export type ChorusDiffMapBoolean = {
-  x: boolean;
-  h: boolean;
-  m: boolean;
-  e: boolean;
-}
 
 export type ChorusMidi = {
   hasSections: boolean
