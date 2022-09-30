@@ -5,33 +5,7 @@ import type { ChorusChart } from './parsers/chart'
 import type { ChorusIni } from './parsers/ini'
 import type { ChorusMidi } from './parsers/midi'
 
-export function combineChartData (iniData: ChorusIni, chartData: ChorusChart): charts {
-  const data = new charts()
-
-  data.chart_format = ChartFormat.CHART
-
-  // INI DATA
-  data.ini_album_track = parseIntOrNull(iniData.album_track)
-  data.ini_album = iniData.album || chartData.chartMeta.Album
-  data.ini_artist = iniData.artist || chartData.chartMeta.Artist
-  data.ini_charter = iniData.charter || iniData.frets || chartData.chartMeta.Charter
-  data.ini_diff_band = parseIntOrNull(iniData.diff_band)
-  data.ini_diff_bass = parseIntOrNull(iniData.diff_bass)
-  data.ini_diff_bassghl = parseIntOrNull(iniData.diff_bassghl)
-  data.ini_diff_drums = parseIntOrNull(iniData.diff_drums)
-  data.ini_diff_guitar = parseIntOrNull(iniData.diff_guitar)
-  data.ini_diff_guitarghl = parseIntOrNull(iniData.diff_guitarghl)
-  data.ini_diff_keys = parseIntOrNull(iniData.diff_keys)
-  data.ini_diff_rhythm = parseIntOrNull(iniData.diff_rhythm)
-  data.ini_genre = iniData.genre || chartData.chartMeta.Genre
-  data.ini_icon = iniData.icon
-  data.ini_loading_phrase = iniData.loading_phrase
-  data.ini_name = iniData.name || chartData.chartMeta.Name
-  data.ini_playlist_track = parseIntOrNull(iniData.playlist_track)
-  data.ini_song_length = parseIntOrNull(iniData.song_length)
-  data.ini_track = parseIntOrNull(iniData.track)
-  data.ini_year = iniData.year || iniData.year
-
+function combineData (data: charts, chartData: ChorusChart | ChorusMidi): charts {
   // CHART DATA
   data.chart_hasSections = chartData.hasSections
   data.chart_hasStarPower = chartData.hasStarPower
@@ -144,8 +118,63 @@ export function combineChartData (iniData: ChorusIni, chartData: ChorusChart): c
   return data
 }
 
-export function combineMidiData (): charts {
+
+export function combineChartData (iniData: ChorusIni, chartData: ChorusChart): charts {
   const data = new charts()
 
-  return data
+  data.chart_format = ChartFormat.CHART
+
+  // INI DATA
+  data.ini_album_track = parseIntOrNull(iniData.album_track)
+  data.ini_album = iniData.album || chartData.chartMeta.Album
+  data.ini_artist = iniData.artist || chartData.chartMeta.Artist
+  data.ini_charter = iniData.charter || iniData.frets || chartData.chartMeta.Charter
+  data.ini_diff_band = parseIntOrNull(iniData.diff_band)
+  data.ini_diff_bass = parseIntOrNull(iniData.diff_bass)
+  data.ini_diff_bassghl = parseIntOrNull(iniData.diff_bassghl)
+  data.ini_diff_drums = parseIntOrNull(iniData.diff_drums)
+  data.ini_diff_guitar = parseIntOrNull(iniData.diff_guitar)
+  data.ini_diff_guitarghl = parseIntOrNull(iniData.diff_guitarghl)
+  data.ini_diff_keys = parseIntOrNull(iniData.diff_keys)
+  data.ini_diff_rhythm = parseIntOrNull(iniData.diff_rhythm)
+  data.ini_genre = iniData.genre || chartData.chartMeta.Genre
+  data.ini_icon = iniData.icon
+  data.ini_loading_phrase = iniData.loading_phrase
+  data.ini_name = iniData.name || chartData.chartMeta.Name
+  data.ini_playlist_track = parseIntOrNull(iniData.playlist_track)
+  data.ini_song_length = parseIntOrNull(iniData.song_length)
+  data.ini_track = parseIntOrNull(iniData.track)
+  data.ini_year = iniData.year || iniData.year
+
+  return combineData(data, chartData)
+}
+
+export function combineMidiData (iniData: ChorusIni, chartData: ChorusMidi): charts {
+  const data = new charts()
+
+  data.chart_format = ChartFormat.CHART
+
+  // INI DATA
+  data.ini_album_track = parseIntOrNull(iniData.album_track)
+  data.ini_album = iniData.album
+  data.ini_artist = iniData.artist
+  data.ini_charter = iniData.charter || iniData.frets
+  data.ini_diff_band = parseIntOrNull(iniData.diff_band)
+  data.ini_diff_bass = parseIntOrNull(iniData.diff_bass)
+  data.ini_diff_bassghl = parseIntOrNull(iniData.diff_bassghl)
+  data.ini_diff_drums = parseIntOrNull(iniData.diff_drums)
+  data.ini_diff_guitar = parseIntOrNull(iniData.diff_guitar)
+  data.ini_diff_guitarghl = parseIntOrNull(iniData.diff_guitarghl)
+  data.ini_diff_keys = parseIntOrNull(iniData.diff_keys)
+  data.ini_diff_rhythm = parseIntOrNull(iniData.diff_rhythm)
+  data.ini_genre = iniData.genre
+  data.ini_icon = iniData.icon
+  data.ini_loading_phrase = iniData.loading_phrase
+  data.ini_name = iniData.name
+  data.ini_playlist_track = parseIntOrNull(iniData.playlist_track)
+  data.ini_song_length = parseIntOrNull(iniData.song_length)
+  data.ini_track = parseIntOrNull(iniData.track)
+  data.ini_year = iniData.year || iniData.year
+
+  return combineData(data, chartData)
 }
