@@ -1,6 +1,8 @@
 import { BinaryLike, createHash } from 'crypto'
 import { charts } from './../orm/entity/charts'
 import { ChorusDiffMapBoolean, ChorusDiffMapString, DifficultyFlags, InstrumentFlags } from './../types'
+import { join, parse } from 'path'
+import { lstat, readdir } from 'fs/promises'
 
 export class Getters {
   static get isProduction (): boolean {
@@ -77,3 +79,48 @@ export function GetInstrumentFlagsFromChartByDiff (data: charts, target: Difficu
 
   return flags
 }
+
+export const SupportedVideoFormats = ['.mp4', '.avi', '.webm', '.vp8', '.ogv', '.mpeg']
+export const SupportedImageFormats = ['.png', '.jpg', '.jpeg']
+export const SupportedStemNames = ['guitar', 'bass', 'rhythm', 'vocals', 'vocals_1', 'vocals_2', 'drums', 'drums_1', 'drums_2', 'drums_3', 'drums_4', 'keys', 'song', 'crowd']
+export const SupportedAudioFormats = ['.ogg', '.mp3', '.wav', '.opus']
+
+export function isSupportedFile (fileName: string): boolean {
+  const File = parse(fileName)
+  const FileName = File.name.toLocaleLowerCase()
+  const FileExt = File.ext.toLocaleLowerCase()
+
+  if (FileName === 'notes') {
+    if (FileExt === '.mid') { return true }
+    if (FileExt === '.chart') { return true }
+  } else if (FileName === 'song' && FileExt === '.ini') {
+    return true
+  } else if (FileName === 'video' && SupportedVideoFormats.includes(FileExt)) {
+    return true
+  } else if (SupportedImageFormats.includes(FileExt)) {
+    return true
+  } else if (SupportedStemNames.includes(FileName) && SupportedAudioFormats.includes(FileExt)) {
+    return true
+  } else {
+    return false
+  }
+}
+
+export async function getSupportedFilesDirectory (directory: string): Promise<string[]> {
+  const files = await readdir(directory)
+  const supportedFiles: string[] = []
+
+  for (let i = 0; i < files.length; i++) {
+    const stat = await lstat(join(directory, files[i]))
+
+    if (stat.isSymbolicLink()) { continue }
+    if (stat.isDirectory) { continue }
+
+    if (!isSupportedFile(files[i])) { continue }
+
+    supportedFiles.push(files[i])
+  }
+
+  return supportedFiles
+}
+
