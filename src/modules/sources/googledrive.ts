@@ -46,4 +46,7 @@ function isCredentialsValid (): boolean {
 
 export default async function CrawlRecursive () {
   if (!isCredentialsValid()) { await GetCredentials() }
+
+  const res = await GoogleDrive.files.list({ q: "'1kgPCEt990poTNQC5tM0x8ghKOLVgDIZt' in parents" }, { responseType: 'json' })
+  console.log(res.data)
 }
