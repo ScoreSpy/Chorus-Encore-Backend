@@ -5,6 +5,7 @@ import logger from './modules/log'
 import { Getters } from './modules/helpers'
 import prometheus from './modules/prometheus'
 import v1Handler from './routes/api/v1/'
+import debug from './modules/debug'
 
 const log = logger.createContext('server')
 
@@ -58,6 +59,9 @@ async function bottledWasHere () {
   await cache.init()
 
   server.register(v1Handler, { prefix: '/api/v1' })
+
+  // tmp
+  debug()
 
   return server
 }

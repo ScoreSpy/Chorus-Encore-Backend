@@ -1,4 +1,4 @@
-import { variables } from './../orm/entity/variables'
+import { variables } from '../orm/entity/variables'
 import database from './../modules/database'
 
 class Cache {

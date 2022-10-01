@@ -14,10 +14,7 @@ export default async function Extract7z (sourceFileLocation: string, destination
      * myStream.on('progress', (progress) => { })
      */
 
-    myStream.on('end', () => {
-      resolve()
-    })
-
+    myStream.on('end', () => { resolve() })
     myStream.on('error', (err) => reject(err))
   })
 }
