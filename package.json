@@ -20,6 +20,7 @@
     "iconv-lite": "^0.6.3",
     "midifile": "^2.0.0",
     "mysql": "^2.18.1",
+    "node-7z": "^3.0.0",
     "prom-client": "^14.1.0",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.3.10"
@@ -27,6 +28,7 @@
   "devDependencies": {
     "@types/http-errors": "^1.8.2",
     "@types/node": "^18.7.23",
+    "@types/node-7z": "^2.1.4",
     "@typescript-eslint/eslint-plugin": "^5.38.1",
     "@typescript-eslint/parser": "^5.38.1",
     "eslint": "^8.24.0",

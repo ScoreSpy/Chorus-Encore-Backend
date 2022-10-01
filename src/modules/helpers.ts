@@ -2,7 +2,7 @@ import { BinaryLike, createHash } from 'crypto'
 import { charts } from './../orm/entity/charts'
 import { ChorusDiffMapBoolean, ChorusDiffMapString, DifficultyFlags, InstrumentFlags } from './../types'
 import { join, parse } from 'path'
-import { lstat, readdir } from 'fs/promises'
+import { access, lstat, readdir } from 'fs/promises'
 
 export class Getters {
   static get isProduction (): boolean {
@@ -124,3 +124,11 @@ export async function getSupportedFilesDirectory (directory: string): Promise<st
   return supportedFiles
 }
 
+export async function pathExists (path) {
+  try {
+    await access(path)
+    return true
+  } catch {
+    return false
+  }
+}
