@@ -12,6 +12,9 @@ export class charts {
   @Column({ type: 'int' })
     chart_format: ChartFormat
 
+  @Column({ type: 'varchar' })
+    source_id: string
+
   // INI DATA
   @Column({ type: 'int', nullable: true })
     ini_album_track?: number
