@@ -3,6 +3,7 @@ import { charts } from './../orm/entity/charts'
 import { ChorusDiffMapBoolean, ChorusDiffMapString, DifficultyFlags, InstrumentFlags } from './../types'
 import { join, parse } from 'path'
 import { access, lstat, readdir } from 'fs/promises'
+import { drive_v3 } from 'googleapis'
 
 export class Getters {
   static get isProduction (): boolean {
@@ -124,6 +125,41 @@ export async function getSupportedFilesDirectory (directory: string): Promise<st
   return supportedFiles
 }
 
+export function getSupportedFilesDrive (directory: drive_v3.Schema$File[]): [string, string][] {
+  const supportedFiles: [string, string][] = []
+
+  for (let i = 0; i < directory.length; i++) {
+    if (!isSupportedFile(directory[i].name)) { continue }
+
+    supportedFiles.push([directory[i].id, directory[i].name])
+  }
+
+  return supportedFiles
+}
+
+export function isValidSongDrive (fileNames: string[]): boolean {
+  // eslint-disable-next-line no-param-reassign
+  fileNames = fileNames.map((f) => f.toLowerCase())
+
+  let hasChart = false
+  let hasini = false
+  let hasAudio = false
+
+  for (let i = 0; i < fileNames.length; i++) {
+    if (fileNames[i] === 'notes.mid' || fileNames[i] === 'notes.chart') { hasChart = true; continue }
+    if (fileNames[i] === 'song.ini') { hasini = true; continue }
+
+    const File = parse(fileNames[i])
+    const FileName = File.name.toLocaleLowerCase()
+    const FileExt = File.ext.toLocaleLowerCase()
+
+    if (SupportedStemNames.includes(FileName) && SupportedAudioFormats.includes(FileExt)) { hasAudio = true; continue }
+  }
+
+  if (hasChart && hasini && hasAudio) { return true }
+  return false
+}
+
 export async function pathExists (path) {
   try {
     await access(path)
@@ -131,4 +167,12 @@ export async function pathExists (path) {
   } catch {
     return false
   }
+}
+
+export function timeout (time): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve()
+    }, time) // 2.5s * retry count
+  })
 }
