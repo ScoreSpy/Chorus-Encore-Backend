@@ -25,7 +25,6 @@ export function parseIntOrNull (data?: string): number | null {
 
 export function ChorusMapBooleanToDifficultyFlags (data: ChorusDiffMapBoolean) {
   let flags = DifficultyFlags.None
-
   if (!data) { return flags }
 
   if (typeof data.e === 'boolean') { flags += DifficultyFlags.Easy }
