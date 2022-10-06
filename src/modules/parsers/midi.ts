@@ -7,6 +7,21 @@ import type { ChorusDiffMapBoolean, ChorusDiffMapNumber, ChorusDiffMapString } f
 
 const log = logger.createContext('parser/midi')
 
+const SOLO_MARKER = 103
+const SP_MARKER = 116
+
+const FORCED_HOPO_E = 65
+const FORCED_STRUM_E = 66
+
+const FORCED_HOPO_M = 77
+const FORCED_STRUM_M = 78
+
+const FORCED_HOPO_H = 89
+const FORCED_STRUM_H = 90
+
+const FORCED_HOPO_X = 101
+const FORCED_STRUM_X = 102
+
 const partMap = {
   'PART GUITAR': 'guitar',
   'PART BASS': 'bass',
@@ -109,7 +124,7 @@ function parse (midiFile: Buffer): ChorusMidi | null {
     const data = event.data ? event.data.map((dta) => String.fromCharCode(dta)).join('') : null
 
     // Let's hope I'm not wrong
-    if (event.param1 === 103) {
+    if (event.param1 === SOLO_MARKER) {
       chartData.hasSoloSections = true
     // eslint-disable-next-line prefer-named-capture-group
     } else if (data && data.match(/^\[(section|prc)/u)) { // Prc? different standards for .mids smh, that's most likely from RB though
@@ -130,10 +145,10 @@ function parse (midiFile: Buffer): ChorusMidi | null {
      * Param1 is the note being played.
      * The interesting things happen here...
      */
-    if (event.param1 && event.param1 !== 103) {
-      if (event.param1 === 116) {
+    if (event.param1 && event.param1 !== SOLO_MARKER) {
+      if (event.param1 === SP_MARKER) {
         chartData.hasStarPower = true
-      } else if ([65, 66, 77, 78, 89, 90, 101, 102].indexOf(event.param1) > -1) {
+      } else if ([FORCED_HOPO_E, FORCED_STRUM_E, FORCED_HOPO_M, FORCED_STRUM_M, FORCED_HOPO_H, FORCED_STRUM_H, FORCED_HOPO_X, FORCED_STRUM_X].indexOf(event.param1) > -1) {
         chartData.hasForced = true
       } else if (tracks[event.track] !== 'guitarghl' && tracks[event.track] !== 'bassghl') {
         // Detect which difficulty the note is on
