@@ -87,7 +87,6 @@ export const SupportedStemNames = ['guitar', 'bass', 'rhythm', 'vocals', 'vocals
 export const SupportedAudioFormats = ['.ogg', '.mp3', '.wav', '.opus']
 
 export function isSupportedFile (fileName: string): boolean {
-  console.log(fileName)
   const File = parse(fileName)
   const FileName = File.name.toLocaleLowerCase()
   const FileExt = File.ext.toLocaleLowerCase()
@@ -113,18 +112,12 @@ export async function getSupportedFilesDirectory (directory: string): Promise<st
   const supportedFiles: string[] = []
 
   for (let i = 0; i < files.length; i++) {
-    console.log(join(directory, files[i]))
     const stat = await lstat(join(directory, files[i]))
 
-    console.log('isSymbolicLink')
     if (stat.isSymbolicLink()) { continue }
-    console.log('isDirectory')
     if (stat.isDirectory()) { continue }
-
-    console.log('isSupportedFile')
     if (!isSupportedFile(parse(files[i]).base)) { continue }
 
-    console.log('push')
     supportedFiles.push(files[i])
   }
 

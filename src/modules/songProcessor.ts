@@ -14,31 +14,37 @@ import { ChartFormat } from './../types'
 import { combineChartData, combineMidiData } from './combineChartData'
 import * as parsers from './parsers'
 import { charts } from './../orm/entity/charts'
+import PQueue from 'p-queue'
 
 export default async function processSongs (songs: SearchResults) {
+  const queue = new PQueue({ concurrency: 16 })
+
   const keys7z = Array.from(songs.Archives7z.keys())
   for (let i = 0; i < keys7z.length; i++) {
     const data = songs.Archives7z.get(keys7z[i])
-    await HandleArchive(data)
+    queue.add(() => HandleArchive(data))
   }
 
   const keysRAR = Array.from(songs.ArchivesRAR.keys())
   for (let i = 0; i < keysRAR.length; i++) {
     const data = songs.ArchivesRAR.get(keysRAR[i])
-    await HandleArchive(data)
+    queue.add(() => HandleArchive(data))
   }
 
   const keysZip = Array.from(songs.ArchivesZip.keys())
   for (let i = 0; i < keysZip.length; i++) {
     const data = songs.ArchivesZip.get(keysZip[i])
-    await HandleArchive(data)
+    queue.add(() => HandleArchive(data))
   }
 
   const keysFolders = Array.from(songs.SongFolders.keys())
   for (let i = 0; i < keysFolders.length; i++) {
     const data = songs.SongFolders.get(keysFolders[i])
-    await HandleFolder(data, keysFolders[i])
+    queue.add(() => HandleFolder(data, keysFolders[i]))
   }
+
+  await queue.onIdle()
+  console.log('queue idle')
 }
 
 async function DownloadFile (destDir: string, id: string, options = { retryLimit: 3 }, retrys = 0) {
@@ -83,16 +89,11 @@ async function HandleArchive (file: drive_v3.Schema$File) {
   try {
     await DownloadFile(join(paths.extraction, file.id, 'archive'), file.id)
     await Extract7z(join(paths.extraction, file.id, 'archive'), join(paths.extraction, file.id))
-    console.log('extracted', join(paths.extraction, file.id, 'archive'))
     await rm(join(paths.extraction, file.id, 'archive'))
-    console.log('deleted', join(paths.extraction, file.id, 'archive'))
   } catch (error) {
     console.log('download failed, cleaning up')
     await rm(join(paths.extraction, file.id), { recursive: true, force: true })
   }
-
-  const dir = await getFiles(join(paths.extraction, file.id))
-  console.log('found files', dir)
 
   await tryProcessSong(join(paths.extraction, file.id), file.id)
 }
@@ -125,7 +126,6 @@ async function tryProcessSong (path: string, source_id: string) {
 
 async function ProcSong (path: string, source_id: string) {
   const dir = await getFiles(path)
-  console.log('found files', dir)
 
   // look for chart files first
   let baseFolder = ''
@@ -157,8 +157,6 @@ async function ProcSong (path: string, source_id: string) {
   }
 
   const supportedFiles = await getSupportedFilesDirectory(baseFolder)
-  console.log(supportedFiles)
-
   const iniFile = supportedFiles.filter((s) => s.toLowerCase() === 'song.ini')[0]
   const iniData = parsers.parseIni(await readFile(join(baseFolder, iniFile)))
 
@@ -179,6 +177,4 @@ async function ProcSong (path: string, source_id: string) {
 
   data.source_id = source_id
   await database.charts.save(data)
-
-  console.log(iniData)
 }
