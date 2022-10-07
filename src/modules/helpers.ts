@@ -4,6 +4,8 @@ import { ChorusDiffMapBoolean, ChorusDiffMapString, DifficultyFlags, InstrumentF
 import { join, parse } from 'path'
 import { access, lstat, readdir } from 'fs/promises'
 import { drive_v3 } from 'googleapis'
+import { PassThrough } from 'stream'
+import archiver from 'archiver'
 
 export class Getters {
   static get isProduction (): boolean {
@@ -228,4 +230,15 @@ export async function findFile (path: string, file: string): Promise<string | nu
   }
 
   return null
+}
+
+export function archiveStreamToBuffer (stream: PassThrough, name: string, archive?: archiver.Archiver): Promise<{ name: string, buffer: Buffer }> {
+  return new Promise((resolve, reject) => {
+    const buffers = []
+    stream.on('error', reject)
+    stream.on('data', (data: Buffer) => buffers.push(data))
+    stream.on('end', () => resolve({ name, buffer: Buffer.concat(buffers) }))
+
+    if (archive) { archive.finalize() }
+  })
 }
