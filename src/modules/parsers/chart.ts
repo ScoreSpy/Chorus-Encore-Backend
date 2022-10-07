@@ -385,6 +385,7 @@ function parse (chart: Buffer): ChorusChart | null {
     // Compute the hashes and note counts of individual difficulties/instruments
     chartData.noteCounts[instrument][difficulty] = notesArray.length
     chartData.hashes[instrument][difficulty] = createMD5(notesArray.join(' '))
+    if (typeof chartData.hasOpen[instrument] === 'undefined') { chartData.hasOpen[instrument] = false }
   }
 
   chartData.chartMeta.length = time >> 0
