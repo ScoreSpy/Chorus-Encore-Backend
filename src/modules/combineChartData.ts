@@ -1,6 +1,6 @@
 import { ChartFormat, DifficultyFlags } from './../types'
 import { charts } from './../orm/entity/charts'
-import { ChorusMapBooleanToDifficultyFlags, ChorusMapStringToDifficultyFlags, GetInstrumentFlagsFromChart, GetInstrumentFlagsFromChartByDiff, parseIntOrNull } from './helpers'
+import { ChorusMapStringToDifficultyFlags, GetInstrumentFlagsFromChart, GetInstrumentFlagsFromChartByDiff, parseIntOrNull } from './helpers'
 import type { ChorusChart } from './parsers/chart'
 import type { ChorusIni } from './parsers/ini'
 import type { ChorusMidi } from './parsers/midi'
@@ -18,13 +18,13 @@ function combineData (data: charts, chartData: ChorusChart | ChorusMidi): charts
   data.chart_length = chartData.chartMeta.length
   data.chart_effective_length = chartData.chartMeta.effectiveLength
 
-  data.chart_hasOpen_guitar = ChorusMapBooleanToDifficultyFlags(chartData.hasOpen.guitar)
-  data.chart_hasOpen_bass = ChorusMapBooleanToDifficultyFlags(chartData.hasOpen.bass)
-  data.chart_hasOpen_rhythm = ChorusMapBooleanToDifficultyFlags(chartData.hasOpen.rhythm)
-  data.chart_hasOpen_keys = ChorusMapBooleanToDifficultyFlags(chartData.hasOpen.keys)
-  data.chart_hasOpen_drums = ChorusMapBooleanToDifficultyFlags(chartData.hasOpen.drums)
-  data.chart_hasOpen_guitarghl = ChorusMapBooleanToDifficultyFlags(chartData.hasOpen.guitarghl)
-  data.chart_hasOpen_bassghl = ChorusMapBooleanToDifficultyFlags(chartData.hasOpen.bassghl)
+  data.chart_hasOpen_guitar = chartData.hasOpen.guitar
+  data.chart_hasOpen_bass = chartData.hasOpen.bass
+  data.chart_hasOpen_rhythm = chartData.hasOpen.rhythm
+  data.chart_hasOpen_keys = chartData.hasOpen.keys
+  data.chart_hasOpen_drums = chartData.hasOpen.drums
+  data.chart_hasOpen_guitarghl = chartData.hasOpen.guitarghl
+  data.chart_hasOpen_bassghl = chartData.hasOpen.bassghl
 
   // NOTE COUNT
   data.chart_noteCounts_guitar_e = chartData.noteCounts.guitar && chartData.noteCounts.guitar.e

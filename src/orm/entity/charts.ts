@@ -107,20 +107,20 @@ export class charts {
   @Column({ type: 'int' })
     chart_effective_length: number
 
-  @Column({ type: 'int' })
-    chart_hasOpen_guitar: DifficultyFlags
-  @Column({ type: 'int' })
-    chart_hasOpen_bass: DifficultyFlags
-  @Column({ type: 'int' })
-    chart_hasOpen_rhythm: DifficultyFlags
-  @Column({ type: 'int' })
-    chart_hasOpen_keys: DifficultyFlags
-  @Column({ type: 'int' })
-    chart_hasOpen_drums: DifficultyFlags
-  @Column({ type: 'int' })
-    chart_hasOpen_guitarghl: DifficultyFlags
-  @Column({ type: 'int' })
-    chart_hasOpen_bassghl: DifficultyFlags
+  @Column({ type: 'int', nullable: true })
+    chart_hasOpen_guitar: boolean
+  @Column({ type: 'int', nullable: true })
+    chart_hasOpen_bass: boolean
+  @Column({ type: 'int', nullable: true })
+    chart_hasOpen_rhythm: boolean
+  @Column({ type: 'int', nullable: true })
+    chart_hasOpen_keys: boolean
+  @Column({ type: 'int', nullable: true })
+    chart_hasOpen_drums: boolean
+  @Column({ type: 'int', nullable: true })
+    chart_hasOpen_guitarghl: boolean
+  @Column({ type: 'int', nullable: true })
+    chart_hasOpen_bassghl: boolean
 
   // NOTE COUNT
   @Column({ type: 'int', nullable: true })

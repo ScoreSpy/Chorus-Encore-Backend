@@ -3,7 +3,7 @@
 import { createMD5 } from './../helpers'
 import logger from './../log'
 import MIDIFile from 'midifile'
-import type { ChorusDiffMapBoolean, ChorusDiffMapNumber, ChorusDiffMapString } from './../../types'
+import type { ChorusDiffMapNumber, ChorusDiffMapString } from './../../types'
 
 const log = logger.createContext('parser/midi')
 
@@ -42,34 +42,34 @@ export type ChorusMidi = {
   hasSoloSections: boolean
   hasTap: boolean
   hasOpen: {
-    guitar?: ChorusDiffMapBoolean;
-    bass?: ChorusDiffMapBoolean;
-    rhythm?: ChorusDiffMapBoolean;
-    keys?: ChorusDiffMapBoolean;
-    drums?: ChorusDiffMapBoolean;
-    guitarghl?: ChorusDiffMapBoolean;
-    bassghl?: ChorusDiffMapBoolean;
+    guitar?: boolean
+    bass?: boolean
+    rhythm?: boolean
+    keys?: boolean
+    drums?: boolean
+    guitarghl?: boolean
+    bassghl?: boolean
   }
   noteCounts: {
-    guitar?: ChorusDiffMapNumber;
-    bass?: ChorusDiffMapNumber;
-    rhythm?: ChorusDiffMapNumber;
-    keys?: ChorusDiffMapNumber;
-    drums?: ChorusDiffMapNumber;
-    guitarghl?: ChorusDiffMapNumber;
-    bassghl?: ChorusDiffMapNumber;
+    guitar?: ChorusDiffMapNumber
+    bass?: ChorusDiffMapNumber
+    rhythm?: ChorusDiffMapNumber
+    keys?: ChorusDiffMapNumber
+    drums?: ChorusDiffMapNumber
+    guitarghl?: ChorusDiffMapNumber
+    bassghl?: ChorusDiffMapNumber
   }
   is120: boolean
   hasLyrics: boolean
   hashes: {
     file: string,
-    guitar?: ChorusDiffMapString;
-    bass?: ChorusDiffMapString;
-    rhythm?: ChorusDiffMapString;
-    keys?: ChorusDiffMapString;
-    drums?: ChorusDiffMapString;
-    guitarghl?: ChorusDiffMapString;
-    bassghl?: ChorusDiffMapString;
+    guitar?: ChorusDiffMapString
+    bass?: ChorusDiffMapString
+    rhythm?: ChorusDiffMapString
+    keys?: ChorusDiffMapString
+    drums?: ChorusDiffMapString
+    guitarghl?: ChorusDiffMapString
+    bassghl?: ChorusDiffMapString
   }
   hasBrokenNotes: boolean
   brokenNotes: {

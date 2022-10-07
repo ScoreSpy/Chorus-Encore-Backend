@@ -3,7 +3,7 @@
 import { createMD5 } from './../helpers'
 import Iconv from 'iconv-lite'
 import logger from './../log'
-import type { ChorusDiffMapBoolean, ChorusDiffMapNumber, ChorusDiffMapString } from './../../types'
+import type { ChorusDiffMapNumber, ChorusDiffMapString } from './../../types'
 
 const log = logger.createContext('parser/chart')
 
@@ -60,82 +60,82 @@ const diffMap = {
 const notesMap = { 0: 1, 1: 2, 2: 3, 3: 4, 4: 5, 8: 6, 7: 7 }
 
 export type ChorusChartMeta = {
-  Name?: string;
-  Artist?: string;
-  Charter?: string;
-  Year?: string;
-  Offset?: string;
-  Resolution: number;
-  Player2?: string;
-  Difficulty?: string;
-  PreviewStart?: string;
-  PreviewEnd?: string;
-  Genre?: string;
-  MediaType?: string;
-  MusicStream?: string;
-  length: number;
-  effectiveLength: number;
-  Album?: string;
-  GuitarStream?: string;
-  ArtistText?: string;
-  CountOff?: string;
-  GuitarVol?: string;
-  BandVol?: string;
-  HoPo?: string;
-  OriginalArtist?: string;
+  Name?: string
+  Artist?: string
+  Charter?: string
+  Year?: string
+  Offset?: string
+  Resolution: number
+  Player2?: string
+  Difficulty?: string
+  PreviewStart?: string
+  PreviewEnd?: string
+  Genre?: string
+  MediaType?: string
+  MusicStream?: string
+  length: number
+  effectiveLength: number
+  Album?: string
+  GuitarStream?: string
+  ArtistText?: string
+  CountOff?: string
+  GuitarVol?: string
+  BandVol?: string
+  HoPo?: string
+  OriginalArtist?: string
 }
 
 export type ChorusChart = {
-  hasSections: boolean;
-  hasStarPower: boolean;
-  hasForced: boolean;
-  hasTap: boolean;
+  hasSections: boolean
+  hasStarPower: boolean
+  hasForced: boolean
+  hasTap: boolean
   hasOpen: {
-    guitar?: ChorusDiffMapBoolean;
-    bass?: ChorusDiffMapBoolean;
-    rhythm?: ChorusDiffMapBoolean;
-    keys?: ChorusDiffMapBoolean;
-    drums?: ChorusDiffMapBoolean;
-    guitarghl?: ChorusDiffMapBoolean;
-    bassghl?: ChorusDiffMapBoolean;
+    guitar?: boolean
+    bass?: boolean
+    rhythm?: boolean
+    keys?: boolean
+    drums?: boolean
+    guitarghl?: boolean
+    bassghl?: boolean
   }
 
-  hasSoloSections: boolean;
-  hasLyrics: boolean;
+  hasSoloSections: boolean
+  hasLyrics: boolean
   noteCounts: {
-    guitar?: ChorusDiffMapNumber;
-    bass?: ChorusDiffMapNumber;
-    rhythm?: ChorusDiffMapNumber;
-    keys?: ChorusDiffMapNumber;
-    drums?: ChorusDiffMapNumber;
-    guitarghl?: ChorusDiffMapNumber;
-    bassghl?: ChorusDiffMapNumber;
+    guitar?: ChorusDiffMapNumber
+    bass?: ChorusDiffMapNumber
+    rhythm?: ChorusDiffMapNumber
+    keys?: ChorusDiffMapNumber
+    drums?: ChorusDiffMapNumber
+    guitarghl?: ChorusDiffMapNumber
+    bassghl?: ChorusDiffMapNumber
   }
 
   hashes: {
-    file: string;
-    guitar?: ChorusDiffMapString;
-    bass?: ChorusDiffMapString;
-    rhythm?: ChorusDiffMapString;
-    keys?: ChorusDiffMapString;
-    drums?: ChorusDiffMapString;
-    guitarghl?: ChorusDiffMapString;
-    bassghl?: ChorusDiffMapString;
+    file: string
+    guitar?: ChorusDiffMapString
+    bass?: ChorusDiffMapString
+    rhythm?: ChorusDiffMapString
+    keys?: ChorusDiffMapString
+    drums?: ChorusDiffMapString
+    guitarghl?: ChorusDiffMapString
+    bassghl?: ChorusDiffMapString
   }
 
   chartMeta: ChorusChartMeta
 
-  is120: boolean;
-  hasBrokenNotes: boolean;
+  is120: boolean
+  hasBrokenNotes: boolean
   brokenNotes: {
     found?: boolean,
-    index: number;
+    index: number
     section: {
-      index: number;
-      section: string;
+      index: number
+      section: string
     }
-    time?: number;
-  }[];
+    time?: number
+  }[]
 }
 
 
