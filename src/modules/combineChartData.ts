@@ -102,12 +102,12 @@ function combineData (data: charts, chartData: ChorusChart | ChorusMidi): charts
 
   // ADDITIONAL DATA
   data.chart_difficultys_guitar = ChorusMapStringToDifficultyFlags(chartData.hashes.guitar)
-  data.chart_difficultys_bass = ChorusMapStringToDifficultyFlags(chartData.hashes.guitar)
-  data.chart_difficultys_rhythm = ChorusMapStringToDifficultyFlags(chartData.hashes.guitar)
-  data.chart_difficultys_keys = ChorusMapStringToDifficultyFlags(chartData.hashes.guitar)
-  data.chart_difficultys_drums = ChorusMapStringToDifficultyFlags(chartData.hashes.guitar)
-  data.chart_difficultys_guitarghl = ChorusMapStringToDifficultyFlags(chartData.hashes.guitar)
-  data.chart_difficultys_bassghl = ChorusMapStringToDifficultyFlags(chartData.hashes.guitar)
+  data.chart_difficultys_bass = ChorusMapStringToDifficultyFlags(chartData.hashes.bass)
+  data.chart_difficultys_rhythm = ChorusMapStringToDifficultyFlags(chartData.hashes.rhythm)
+  data.chart_difficultys_keys = ChorusMapStringToDifficultyFlags(chartData.hashes.keys)
+  data.chart_difficultys_drums = ChorusMapStringToDifficultyFlags(chartData.hashes.drums)
+  data.chart_difficultys_guitarghl = ChorusMapStringToDifficultyFlags(chartData.hashes.guitarghl)
+  data.chart_difficultys_bassghl = ChorusMapStringToDifficultyFlags(chartData.hashes.bassghl)
 
   data.chart_instruments = GetInstrumentFlagsFromChart(data)
   data.chart_instruments_e = GetInstrumentFlagsFromChartByDiff(data, DifficultyFlags.Easy)
