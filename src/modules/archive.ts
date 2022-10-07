@@ -6,7 +6,6 @@ import { PassThrough } from 'stream'
 
 export default async function CreateArchive (source: string, dest: string) {
   const archive = archiver('tar', { zlib: { level: 9 } })
-
   const packageFiles = await getSupportedFilesDirectory(source)
 
   for (let i = 0; i < packageFiles.length; i++) {

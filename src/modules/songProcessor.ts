@@ -1,13 +1,13 @@
 /* eslint-disable no-console */
 import { createWriteStream } from 'fs'
-import { mkdir, readdir, readFile, rm } from 'fs/promises'
+import { mkdir, readdir, readFile, rm, writeFile } from 'fs/promises'
 import { drive_v3 } from 'googleapis'
 import { GaxiosResponse } from 'googleapis-common'
 import { join, parse } from 'path'
 import paths from './../configs/paths'
 import { Readable } from 'typeorm/platform/PlatformTools'
 import Extract7z from './extractors/7z'
-import { getFiles, getSupportedFilesDirectory, getSupportedFilesDrive, isValidSongDrive, timeout } from './helpers'
+import { fileExists, getFiles, getSupportedFilesDirectory, getSupportedFilesDrive, isValidSongDrive, timeout } from './helpers'
 import { GoogleDrive, SearchResults } from './sources/googledrive'
 import database from './database'
 import { ChartFormat } from './../types'
@@ -16,6 +16,7 @@ import * as parsers from './parsers'
 import { charts } from './../orm/entity/charts'
 import PQueue from 'p-queue'
 import SnowflakeUtil from './snowflake'
+import archiver from './archive'
 
 export default async function processSongs (songs: SearchResults) {
   const queue = new PQueue({ concurrency: 16 })
@@ -178,6 +179,11 @@ async function ProcSong (path: string, source_id: string) {
 
   data.source_id = source_id
   data.snowflake = SnowflakeUtil.generate(1, 1)
+  const dest = join(paths.store, `${data.snowflake}.tar`)
+
+  if (await fileExists(dest)) { throw new Error('archive exists') }
+  const archiveBuffer = (await archiver(baseFolder, `${data.snowflake}.tar`)).buffer
+  await writeFile(dest, archiveBuffer)
 
   await database.charts.save(data)
 }

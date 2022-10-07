@@ -3,6 +3,7 @@ import { charts } from './../orm/entity/charts'
 import { ChorusDiffMapBoolean, ChorusDiffMapString, DifficultyFlags, InstrumentFlags } from './../types'
 import { join, parse } from 'path'
 import { access, lstat, readdir } from 'fs/promises'
+import { constants as FS_CONST } from 'fs'
 import { drive_v3 } from 'googleapis'
 import { PassThrough } from 'stream'
 import archiver from 'archiver'
@@ -241,4 +242,13 @@ export function archiveStreamToBuffer (stream: PassThrough, name: string, archiv
 
     if (archive) { archive.finalize() }
   })
+}
+
+export async function fileExists (path: string) {
+  try {
+    await access(path, FS_CONST.F_OK)
+  } catch (error) {
+    return false
+  }
+  return true
 }
