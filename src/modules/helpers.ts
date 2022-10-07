@@ -64,20 +64,47 @@ export function GetInstrumentFlagsFromChart (data: charts) {
   return flags
 }
 
-export function GetInstrumentFlagsFromChartByDiff (data: charts, target: DifficultyFlags) {
-  let flags = InstrumentFlags.None
+export function GetInstrumentFlagsFromChartByDiff (data: charts) {
+  const ret = {
+    e: InstrumentFlags.None,
+    m: InstrumentFlags.None,
+    h: InstrumentFlags.None,
+    x: InstrumentFlags.None
+  }
 
-  if (!data) { return flags }
+  if (data.chart_noteCounts_guitar_e > 0) { ret.e += InstrumentFlags.Guitar }
+  if (data.chart_noteCounts_bass_e > 0) { ret.e += InstrumentFlags.bass }
+  if (data.chart_noteCounts_bassghl_e > 0) { ret.e += InstrumentFlags.bassghl }
+  if (data.chart_noteCounts_drums_e > 0) { ret.e += InstrumentFlags.drums }
+  if (data.chart_noteCounts_guitarghl_e > 0) { ret.e += InstrumentFlags.guitarghl }
+  if (data.chart_noteCounts_keys_e > 0) { ret.e += InstrumentFlags.keys }
+  if (data.chart_noteCounts_rhythm_e > 0) { ret.e += InstrumentFlags.rhythm }
 
-  if ((data.chart_difficultys_guitar && target) === target) { flags += InstrumentFlags.Guitar }
-  if ((data.chart_difficultys_bass && target) === target) { flags += InstrumentFlags.bass }
-  if ((data.chart_difficultys_bassghl && target) === target) { flags += InstrumentFlags.bassghl }
-  if ((data.chart_difficultys_drums && target) === target) { flags += InstrumentFlags.drums }
-  if ((data.chart_difficultys_guitarghl && target) === target) { flags += InstrumentFlags.guitarghl }
-  if ((data.chart_difficultys_keys && target) === target) { flags += InstrumentFlags.keys }
-  if ((data.chart_difficultys_rhythm && target) === target) { flags += InstrumentFlags.rhythm }
+  if (data.chart_noteCounts_guitar_m > 0) { ret.m += InstrumentFlags.Guitar }
+  if (data.chart_noteCounts_bass_m > 0) { ret.m += InstrumentFlags.bass }
+  if (data.chart_noteCounts_bassghl_m > 0) { ret.m += InstrumentFlags.bassghl }
+  if (data.chart_noteCounts_drums_m > 0) { ret.m += InstrumentFlags.drums }
+  if (data.chart_noteCounts_guitarghl_m > 0) { ret.m += InstrumentFlags.guitarghl }
+  if (data.chart_noteCounts_keys_m > 0) { ret.m += InstrumentFlags.keys }
+  if (data.chart_noteCounts_rhythm_m > 0) { ret.m += InstrumentFlags.rhythm }
 
-  return flags
+  if (data.chart_noteCounts_guitar_h > 0) { ret.h += InstrumentFlags.Guitar }
+  if (data.chart_noteCounts_bass_h > 0) { ret.h += InstrumentFlags.bass }
+  if (data.chart_noteCounts_bassghl_h > 0) { ret.h += InstrumentFlags.bassghl }
+  if (data.chart_noteCounts_drums_h > 0) { ret.h += InstrumentFlags.drums }
+  if (data.chart_noteCounts_guitarghl_h > 0) { ret.h += InstrumentFlags.guitarghl }
+  if (data.chart_noteCounts_keys_h > 0) { ret.h += InstrumentFlags.keys }
+  if (data.chart_noteCounts_rhythm_h > 0) { ret.h += InstrumentFlags.rhythm }
+
+  if (data.chart_noteCounts_guitar_x > 0) { ret.x += InstrumentFlags.Guitar }
+  if (data.chart_noteCounts_bass_x > 0) { ret.x += InstrumentFlags.bass }
+  if (data.chart_noteCounts_bassghl_x > 0) { ret.x += InstrumentFlags.bassghl }
+  if (data.chart_noteCounts_drums_x > 0) { ret.x += InstrumentFlags.drums }
+  if (data.chart_noteCounts_guitarghl_x > 0) { ret.x += InstrumentFlags.guitarghl }
+  if (data.chart_noteCounts_keys_x > 0) { ret.x += InstrumentFlags.keys }
+  if (data.chart_noteCounts_rhythm_x > 0) { ret.x += InstrumentFlags.rhythm }
+
+  return ret
 }
 
 export const SupportedVideoFormats = ['.mp4', '.avi', '.webm', '.vp8', '.ogv', '.mpeg']

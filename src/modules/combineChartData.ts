@@ -110,10 +110,12 @@ function combineData (data: charts, chartData: ChorusChart | ChorusMidi): charts
   data.chart_difficultys_bassghl = ChorusMapStringToDifficultyFlags(chartData.hashes.bassghl)
 
   data.chart_instruments = GetInstrumentFlagsFromChart(data)
-  data.chart_instruments_e = GetInstrumentFlagsFromChartByDiff(data, DifficultyFlags.Easy)
-  data.chart_instruments_m = GetInstrumentFlagsFromChartByDiff(data, DifficultyFlags.Medium)
-  data.chart_instruments_h = GetInstrumentFlagsFromChartByDiff(data, DifficultyFlags.Hard)
-  data.chart_instruments_x = GetInstrumentFlagsFromChartByDiff(data, DifficultyFlags.Expert)
+
+  const diffMap = GetInstrumentFlagsFromChartByDiff(data)
+  data.chart_instruments_e = diffMap.e
+  data.chart_instruments_m = diffMap.m
+  data.chart_instruments_h = diffMap.h
+  data.chart_instruments_x = diffMap.x
 
   return data
 }
