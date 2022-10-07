@@ -15,6 +15,7 @@ import { combineChartData, combineMidiData } from './combineChartData'
 import * as parsers from './parsers'
 import { charts } from './../orm/entity/charts'
 import PQueue from 'p-queue'
+import SnowflakeUtil from './snowflake'
 
 export default async function processSongs (songs: SearchResults) {
   const queue = new PQueue({ concurrency: 16 })
@@ -176,5 +177,7 @@ async function ProcSong (path: string, source_id: string) {
   }
 
   data.source_id = source_id
+  data.snowflake = SnowflakeUtil.generate(1, 1)
+
   await database.charts.save(data)
 }

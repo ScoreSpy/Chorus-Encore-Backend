@@ -9,6 +9,10 @@ export class charts {
   @CreateDateColumn({ type: 'timestamp' })
     created: Date
 
+  @Index('_index_snowflake')
+  @Column('bigint', { unique: true })
+    snowflake: string
+
   @Column({ type: 'int' })
     chart_format: ChartFormat
 
