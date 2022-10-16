@@ -19,6 +19,7 @@ import SnowflakeUtil from './snowflake'
 import archiver from './archive'
 import runtime from './../configs/runtime'
 import iniConstructor from './iniConstructor'
+import opusConverter from './opusConverter'
 
 export default async function processSongs (songs: SearchResults) {
   const queue = new PQueue({ concurrency: runtime.driveDownloadThreads })
@@ -186,6 +187,8 @@ async function ProcSong (path: string, source_id: string) {
   await rm(join(baseFolder, iniFile), { force: true })
   const iniString = iniConstructor(data)
   await writeFile(join(baseFolder, 'song.ini'), iniString)
+
+  await opusConverter(baseFolder)
 
   if (await fileExists(dest)) { throw new Error('archive exists') }
   const archiveBuffer = (await archiver(baseFolder, `${data.snowflake}.tar`)).buffer

@@ -17,6 +17,7 @@
     "@elastic/elasticsearch": "^7.13.0",
     "archiver": "^5.3.1",
     "fastify": "^4.6.0",
+    "fluent-ffmpeg": "^2.1.2",
     "google-auth-library": "^8.5.2",
     "googleapis": "^108.0.0",
     "http-errors": "^2.0.0",
@@ -31,6 +32,7 @@
   },
   "devDependencies": {
     "@types/archiver": "^5.3.1",
+    "@types/fluent-ffmpeg": "^2.1.20",
     "@types/http-errors": "^1.8.2",
     "@types/node": "^18.7.23",
     "@types/node-7z": "^2.1.4",
