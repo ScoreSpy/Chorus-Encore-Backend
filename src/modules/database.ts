@@ -25,7 +25,8 @@ class Database {
   async init () {
     const connectionOptions: any = config
 
-    Object.assign(config, {
+    // eslint-disable-next-line prefer-object-spread
+    Object.assign({
       options: { encrypt: true },
       entities: [
         charts,
@@ -35,11 +36,9 @@ class Database {
       ],
       bigNumberStrings: false,
       logger: new DatabaseMonitor(),
-      logging: true,
-      maxQueryExecutionTime: -1
-    })
-
-    connectionOptions.charset = 'utf8mb4'
+      maxQueryExecutionTime: -1,
+      charset: 'utf8mb4'
+    }, connectionOptions)
 
     const AppDataSource = new DataSource(connectionOptions)
     this.manager = await AppDataSource.initialize()
