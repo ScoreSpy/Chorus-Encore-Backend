@@ -1,10 +1,10 @@
-import { readdir, rm } from 'node:fs/promises'
+import { readdir, rm, writeFile } from 'node:fs/promises'
 import { join, parse, resolve } from 'node:path'
 import PQueue from 'p-queue'
-import ffmpeg from 'fluent-ffmpeg'
 import os from 'os'
+import sharp from 'sharp'
 
-const CloneHeroSupportedFormats = ['.ogg', '.mp3', '.wav']
+const SupportedFormats = ['.jpeg', '.jpg']
 
 export async function getFiles (dir: string): Promise<string[]> {
   const dirents = await readdir(dir, { withFileTypes: true })
@@ -17,21 +17,14 @@ export async function getFiles (dir: string): Promise<string[]> {
   return Array.prototype.concat(...files)
 }
 
-export function ConvertFile (FileLocation: string): Promise<void> {
-  return new Promise((res, reject) => {
-    const fileData = parse(FileLocation)
+export async function ConvertFile (FileLocation: string): Promise<void> {
+  const fileData = parse(FileLocation)
+  const outputFile = join(fileData.dir, `${fileData.name}.png`)
 
-    ffmpeg(FileLocation).
-      audioCodec('libopus').
-      on('error', (err) => {
-        // console.error(`An error occurred: ${err.message}`)
-        reject(err)
-      }).
-      on('end', () => {
-        res()
-      }).
-      save(join(fileData.dir, `${fileData.name}.opus`))
-  })
+  const buff = await sharp(FileLocation).png().toBuffer()
+  await writeFile(outputFile, buff)
+  // eslint-disable-next-line no-console
+  console.log(`${fileData.name}${fileData.ext} -> ${fileData.name}.png`)
 }
 
 
@@ -40,7 +33,7 @@ export default async function opusConverter (path: string) {
 
   const songFileIndex = files.filter((f) => {
     const p = parse(f)
-    return CloneHeroSupportedFormats.includes(p.ext.toLowerCase())
+    return SupportedFormats.includes(p.ext.toLowerCase())
   })
 
   const queue = new PQueue({ concurrency: os.cpus().length })

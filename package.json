@@ -28,6 +28,7 @@
     "p-queue": "^6.6.2",
     "prom-client": "^14.1.0",
     "reflect-metadata": "^0.1.13",
+    "sharp": "^0.31.1",
     "typeorm": "^0.3.10"
   },
   "devDependencies": {
@@ -36,6 +37,7 @@
     "@types/http-errors": "^1.8.2",
     "@types/node": "^18.7.23",
     "@types/node-7z": "^2.1.4",
+    "@types/sharp": "^0.31.0",
     "@typescript-eslint/eslint-plugin": "^5.38.1",
     "@typescript-eslint/parser": "^5.38.1",
     "eslint": "^8.24.0",
