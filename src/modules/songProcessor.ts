@@ -51,8 +51,6 @@ export default async function processSongs (songs: SearchResults) {
 }
 
 async function DownloadFile (destDir: string, id: string, options = { retryLimit: 3 }, retrys = 0) {
-  console.log('downloading', destDir)
-
   let res: GaxiosResponse<Readable> = null
   try {
     res = await GoogleDrive.files.get({ fileId: id, alt: 'media' }, { responseType: 'stream' })
@@ -120,7 +118,9 @@ async function HandleFolder (files: drive_v3.Schema$File[], folderId: string) {
 async function tryProcessSong (path: string, source_id: string) {
   try {
     await ProcSong(path, source_id)
+    console.log('Processed', source_id)
   } catch (error) {
+    console.error('Error Processing', source_id)
     console.error(error)
   } finally {
     await rm(path, { recursive: true, force: true })
