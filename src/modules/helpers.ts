@@ -118,30 +118,39 @@ export function GetInstrumentFlagsFromChartByDiff (data: charts) {
   return ret
 }
 
+export const SupportedVideoNames = ['video']
 export const SupportedVideoFormats = ['.mp4', '.avi', '.webm', '.vp8', '.ogv', '.mpeg']
+
+export const SupportedImageNames = ['album', 'background', 'highway']
 export const SupportedImageFormats = ['.png', '.jpg', '.jpeg']
+
 export const SupportedStemNames = ['guitar', 'bass', 'rhythm', 'vocals', 'vocals_1', 'vocals_2', 'drums', 'drums_1', 'drums_2', 'drums_3', 'drums_4', 'keys', 'song', 'crowd']
 export const SupportedAudioFormats = ['.ogg', '.mp3', '.wav', '.opus']
+
+export const SupportedChartNames = ['notes']
+export const SupportedChartFormats = ['.mid', '.chart']
+
+export const SupportedConfigNames = ['song']
+export const SupportedConfigFormats = ['.ini']
 
 export function isSupportedFile (fileName: string): boolean {
   const File = parse(fileName)
   const FileName = File.name.toLocaleLowerCase()
   const FileExt = File.ext.toLocaleLowerCase()
 
-  if (FileName === 'notes') {
-    if (FileExt === '.mid') { return true }
-    if (FileExt === '.chart') { return true }
-  } else if (FileName === 'song' && FileExt === '.ini') {
+  if (SupportedChartNames.includes(FileName) && SupportedChartFormats.includes(FileExt)) {
     return true
-  } else if (FileName === 'video' && SupportedVideoFormats.includes(FileExt)) {
+  } else if (SupportedConfigNames.includes(FileName) && SupportedConfigFormats.includes(FileExt)) {
     return true
-  } else if (SupportedImageFormats.includes(FileExt)) {
+  } else if (SupportedImageNames.includes(FileName) && SupportedVideoFormats.includes(FileExt)) {
+    return true
+  } else if (SupportedImageNames.includes(FileName) && SupportedImageFormats.includes(FileExt)) {
     return true
   } else if (SupportedStemNames.includes(FileName) && SupportedAudioFormats.includes(FileExt)) {
     return true
-  } else {
-    return false
   }
+
+  return false
 }
 
 export async function getSupportedFilesDirectory (directory: string): Promise<string[]> {
