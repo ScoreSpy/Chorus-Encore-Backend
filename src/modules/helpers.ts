@@ -26,6 +26,14 @@ export function parseIntOrNull (data?: string): number | null {
   return value
 }
 
+export function parseIntOrDefault (data: string | undefined, def: number): number | null {
+  if (!data) { return def }
+  const value = parseInt(data, 10)
+
+  if (isNaN(value)) { return def }
+  return value
+}
+
 export function ChorusMapBooleanToDifficultyFlags (data: ChorusDiffMapBoolean) {
   let flags = DifficultyFlags.None
   if (!data) { return flags }

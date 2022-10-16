@@ -1,6 +1,6 @@
 import { ChartFormat } from './../types'
 import { charts } from './../orm/entity/charts'
-import { ChorusMapStringToDifficultyFlags, GetInstrumentFlagsFromChart, GetInstrumentFlagsFromChartByDiff, parseIntOrNull } from './helpers'
+import { ChorusMapStringToDifficultyFlags, GetInstrumentFlagsFromChart, GetInstrumentFlagsFromChartByDiff, parseIntOrDefault, parseIntOrNull } from './helpers'
 import type { ChorusChart } from './parsers/chart'
 import type { ChorusIni } from './parsers/ini'
 import type { ChorusMidi } from './parsers/midi'
@@ -141,15 +141,15 @@ export function combineChartData (iniData: ChorusIni, chartData: ChorusChart): c
   data.ini_diff_guitarghl = parseIntOrNull(iniData.diff_guitarghl)
   data.ini_diff_keys = parseIntOrNull(iniData.diff_keys)
   data.ini_diff_rhythm = parseIntOrNull(iniData.diff_rhythm)
-  data.ini_five_lane_drums = parseIntOrNull(iniData.five_lane_drums)
+  data.ini_five_lane_drums = parseIntOrDefault(iniData.five_lane_drums, 0)
   data.ini_genre = iniData.genre || chartData.chartMeta.Genre
   data.ini_icon = iniData.icon
   data.ini_loading_phrase = iniData.loading_phrase
-  data.ini_modchart = parseIntOrNull(iniData.modchart)
+  data.ini_modchart = parseIntOrDefault(iniData.modchart, 0)
   data.ini_name = iniData.name || chartData.chartMeta.Name
   data.ini_playlist_track = parseIntOrNull(iniData.playlist_track)
   data.ini_preview_start_time = parseIntOrNull(iniData.preview_start_time)
-  data.ini_pro_drums = parseIntOrNull(iniData.pro_drums)
+  data.ini_pro_drums = parseIntOrDefault(iniData.pro_drums, 0)
   data.ini_song_length = parseIntOrNull(iniData.song_length)
   data.ini_track = parseIntOrNull(iniData.track)
   data.ini_video_start_time = parseIntOrNull(iniData.video_start_time)
@@ -178,15 +178,15 @@ export function combineMidiData (iniData: ChorusIni, chartData: ChorusMidi): cha
   data.ini_diff_guitarghl = parseIntOrNull(iniData.diff_guitarghl)
   data.ini_diff_keys = parseIntOrNull(iniData.diff_keys)
   data.ini_diff_rhythm = parseIntOrNull(iniData.diff_rhythm)
-  data.ini_five_lane_drums = parseIntOrNull(iniData.five_lane_drums)
+  data.ini_five_lane_drums = parseIntOrDefault(iniData.five_lane_drums, 0)
   data.ini_genre = iniData.genre
   data.ini_icon = iniData.icon
   data.ini_loading_phrase = iniData.loading_phrase
-  data.ini_modchart = parseIntOrNull(iniData.modchart)
+  data.ini_modchart = parseIntOrDefault(iniData.modchart, 0)
   data.ini_name = iniData.name
   data.ini_playlist_track = parseIntOrNull(iniData.playlist_track)
   data.ini_preview_start_time = parseIntOrNull(iniData.preview_start_time)
-  data.ini_pro_drums = parseIntOrNull(iniData.pro_drums)
+  data.ini_pro_drums = parseIntOrDefault(iniData.pro_drums, 0)
   data.ini_song_length = parseIntOrNull(iniData.song_length)
   data.ini_track = parseIntOrNull(iniData.track)
   data.ini_video_start_time = parseIntOrNull(iniData.video_start_time)
