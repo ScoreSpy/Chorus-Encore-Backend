@@ -192,7 +192,7 @@ export class charts {
 
   // HASHES
   @Index('_index_checksum')
-  @Column({ type: 'varchar', length: 50, unique: true })
+  @Column({ type: 'varchar', length: 50 })
     checksum: string
 
   @Column({ type: 'varchar', length: 50, nullable: true })
