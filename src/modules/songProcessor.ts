@@ -21,6 +21,7 @@ import runtime from './../configs/runtime'
 import iniConstructor from './iniConstructor'
 import opusConverter from './converters/opusConverter'
 // import imageConverter from './converters/imageConverter'
+import webmConverter from './converters/webmConverter'
 
 export default async function processSongs (songs: SearchResults) {
   const queue = new PQueue({ concurrency: runtime.driveDownloadThreads })
@@ -191,6 +192,7 @@ async function ProcSong (path: string, source_id: string) {
 
   await opusConverter(baseFolder)
   // await imageConverter(baseFolder)
+  await webmConverter(baseFolder)
 
   if (await fileExists(dest)) { throw new Error('archive exists') }
   const archiveBuffer = (await archiver(baseFolder, `${data.snowflake}.tar`)).buffer

@@ -24,7 +24,8 @@ export function ConvertFile (FileLocation: string): Promise<void> {
     ffmpeg(FileLocation).
       audioCodec('libopus').
       on('error', (err) => {
-        // console.error(`An error occurred: ${err.message}`)
+        // eslint-disable-next-line no-console
+        console.error(`(${FileLocation}) opus conversion error occurred: ${err.message}`)
         reject(err)
       }).
       on('end', () => {

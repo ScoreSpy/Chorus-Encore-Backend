@@ -21,7 +21,14 @@ export async function ConvertFile (FileLocation: string): Promise<void> {
   const fileData = parse(FileLocation)
   const outputFile = join(fileData.dir, `${fileData.name}.png`)
 
-  const buff = await sharp(FileLocation).png().toBuffer()
+  let buff = null
+  try {
+    buff = await sharp(FileLocation).png().toBuffer()
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(`(${FileLocation}) png conversion error occurred: ${error.message}`)
+  }
+
   await writeFile(outputFile, buff)
   // eslint-disable-next-line no-console
   console.log(`${fileData.name}${fileData.ext} -> ${fileData.name}.png`)
