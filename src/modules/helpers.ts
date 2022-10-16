@@ -118,7 +118,7 @@ export function GetInstrumentFlagsFromChartByDiff (data: charts) {
   return ret
 }
 
-export const SupportedVideoNames = ['video']
+export const SupportedVideoNames = ['highway', 'video']
 export const SupportedVideoFormats = ['.mp4', '.avi', '.webm', '.vp8', '.ogv', '.mpeg']
 
 export const SupportedImageNames = ['album', 'background', 'highway']
