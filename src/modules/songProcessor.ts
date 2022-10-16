@@ -183,7 +183,7 @@ async function ProcSong (path: string, source_id: string) {
 
   if (await fileExists(dest)) { throw new Error('archive exists') }
   const archiveBuffer = (await archiver(baseFolder, `${data.snowflake}.tar`)).buffer
-  await writeFile(dest, archiveBuffer)
 
   await database.charts.save(data)
+  await writeFile(dest, archiveBuffer)
 }
