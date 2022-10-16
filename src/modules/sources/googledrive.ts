@@ -5,6 +5,8 @@ import database from './../database'
 import googleCreds from './../../configs/google'
 import { isValidSongDrive } from '../helpers'
 import processSongs from './../songProcessor'
+import PQueue, { DefaultAddOptions } from 'p-queue'
+import PriorityQueue from 'p-queue/dist/priority-queue'
 
 export type SearchResults = { Archives7z: Map<string, drive_v3.Schema$File>, ArchivesRAR: Map<string, drive_v3.Schema$File>, ArchivesZip: Map<string, drive_v3.Schema$File>, SongFolders: Map<string, drive_v3.Schema$File[]> }
 
@@ -19,18 +21,13 @@ async function GetCredentials (): Promise<void> {
   Oauth2Client.setCredentials(googleCredentials)
 }
 
-Oauth2Client.on('tokens', () => {
-  // Oauth2Client.setCredentials(tokens)
-  console.log('Oauth2Client.on tokens')
-})
-
 function isCredentialsValid (): boolean {
   if (!Oauth2Client.credentials.expiry_date) { return false }
   if (new Date().getTime() >= Oauth2Client.credentials.expiry_date) { return false }
   return true
 }
 
-async function ScanRecursive (sourceId: string, doneList: string[], foundSongs: SearchResults) {
+async function ScanRecursive (queue: PQueue<PriorityQueue, DefaultAddOptions>, sourceId: string, doneList: string[], foundSongs: SearchResults) {
   if (doneList.includes(sourceId)) { return }
   doneList.push(sourceId)
 
@@ -52,34 +49,37 @@ async function ScanRecursive (sourceId: string, doneList: string[], foundSongs: 
 
   for (let i = 0; i < files.length; i++) {
     if (files[i].mimeType === 'application/vnd.google-apps.shortcut') {
+      // handle shortcuts
       const shortcut = await GoogleDrive.files.get({ fileId: files[i].id, fields: 'shortcutDetails' })
       console.log('fScanRecursive link', files[i].name)
-      await ScanRecursive(shortcut.data.shortcutDetails.targetId, doneList, foundSongs)
+
+      // await ScanRecursive(shortcut.data.shortcutDetails.targetId, doneList, foundSongs)
+      queue.add(() => ScanRecursive(queue, shortcut.data.shortcutDetails.targetId, doneList, foundSongs))
     } else if (files[i].mimeType === 'application/vnd.google-apps.folder') {
+      // handle folders
       console.log('fScanRecursive folder', files[i].name)
-      await ScanRecursive(files[i].id, doneList, foundSongs)
+
+      // await ScanRecursive(files[i].id, doneList, foundSongs)
+      queue.add(() => ScanRecursive(queue, files[i].id, doneList, foundSongs))
     } else if (files[i].mimeType === 'application/x-7z-compressed') {
+      // handle 7zip
       console.log('found valid Archive7z', files[i].name)
       foundSongs.Archives7z.set(files[i].id, files[i])
-
-      // await HandleArchive(files[i])
     } else if (files[i].mimeType === 'application/rar') {
+      // handle rar
       console.log('found valid ArchiveRAR', files[i].name)
       foundSongs.ArchivesRAR.set(files[i].id, files[i])
-
-      // await HandleArchive(files[i])
     } else if (files[i].mimeType === 'application/x-zip-compressed') {
+      // handle zip
       console.log('found valid ArchiveZip', files[i].name)
       foundSongs.ArchivesZip.set(files[i].id, files[i])
-
-      // await HandleArchive(files[i])
     } else {
+      // handle folder contents
       if (foundSongs.SongFolders.has(sourceId)) { continue }
       if (!files[i].name.toLowerCase().endsWith('.chart') && !files[i].name.toLowerCase().endsWith('.mid')) { continue }
       if (!isValidSongDrive(files.map((f) => f.name))) { continue }
       console.log('found valid song folder')
 
-      // await HandleFolder(files, sourceId)
       foundSongs.SongFolders.set(sourceId, files)
     }
   }
@@ -97,7 +97,10 @@ export default async function CrawlRecursive () {
     SongFolders: new Map()
   }
 
-  await ScanRecursive('1pfqNMLkN2n7nsdT0TIBVPhjsFnsIRYt8', driveLinks, foundSongs)
+  const queue = new PQueue({ concurrency: 12 })
+
+
+  await ScanRecursive(queue, '1p1XuIwYmndRK8Z0VK-uQtnhQEqCBbM9D', driveLinks, foundSongs)
 
   // await ScanRecursive('1p1XuIwYmndRK8Z0VK-uQtnhQEqCBbM9D', driveLinks, foundSongs) // misc drive
   /*
@@ -116,6 +119,8 @@ export default async function CrawlRecursive () {
    * await ScanRecursive('1NYj77jI1i77FQfpjdrgLEkMDNEnpPunL', driveLinks, foundSongs)
    * await ScanRecursive('15zIFxkBDPUceLacBsLIZWvbOeM3HmdWw', driveLinks, foundSongs)
    */
+
+  await queue.onIdle()
 
   console.log('-- RESULTS --')
   console.log(`Archives7z: ${foundSongs.Archives7z.size}`)
