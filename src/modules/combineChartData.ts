@@ -1,4 +1,4 @@
-import { ChartFormat, DifficultyFlags } from './../types'
+import { ChartFormat } from './../types'
 import { charts } from './../orm/entity/charts'
 import { ChorusMapStringToDifficultyFlags, GetInstrumentFlagsFromChart, GetInstrumentFlagsFromChartByDiff, parseIntOrNull } from './helpers'
 import type { ChorusChart } from './parsers/chart'
@@ -127,26 +127,33 @@ export function combineChartData (iniData: ChorusIni, chartData: ChorusChart): c
   data.chart_format = ChartFormat.CHART
 
   // INI DATA
-  data.ini_album_track = parseIntOrNull(iniData.album_track)
   data.ini_album = iniData.album || chartData.chartMeta.Album
+  data.ini_album_track = parseIntOrNull(iniData.album_track)
   data.ini_artist = iniData.artist || chartData.chartMeta.Artist
   data.ini_charter = iniData.charter || iniData.frets || chartData.chartMeta.Charter
   data.ini_diff_band = parseIntOrNull(iniData.diff_band)
   data.ini_diff_bass = parseIntOrNull(iniData.diff_bass)
   data.ini_diff_bassghl = parseIntOrNull(iniData.diff_bassghl)
+  data.ini_diff_drums_real = parseIntOrNull(iniData.diff_drums_real)
   data.ini_diff_drums = parseIntOrNull(iniData.diff_drums)
+  data.ini_diff_guitar_coop = parseIntOrNull(iniData.diff_guitar_coop)
   data.ini_diff_guitar = parseIntOrNull(iniData.diff_guitar)
   data.ini_diff_guitarghl = parseIntOrNull(iniData.diff_guitarghl)
   data.ini_diff_keys = parseIntOrNull(iniData.diff_keys)
   data.ini_diff_rhythm = parseIntOrNull(iniData.diff_rhythm)
+  data.ini_five_lane_drums = parseIntOrNull(iniData.five_lane_drums)
   data.ini_genre = iniData.genre || chartData.chartMeta.Genre
   data.ini_icon = iniData.icon
   data.ini_loading_phrase = iniData.loading_phrase
+  data.ini_modchart = parseIntOrNull(iniData.modchart)
   data.ini_name = iniData.name || chartData.chartMeta.Name
   data.ini_playlist_track = parseIntOrNull(iniData.playlist_track)
+  data.ini_preview_start_time = parseIntOrNull(iniData.preview_start_time)
+  data.ini_pro_drums = parseIntOrNull(iniData.pro_drums)
   data.ini_song_length = parseIntOrNull(iniData.song_length)
   data.ini_track = parseIntOrNull(iniData.track)
-  data.ini_year = iniData.year || iniData.year
+  data.ini_video_start_time = parseIntOrNull(iniData.video_start_time)
+  data.ini_year = parseIntOrNull(iniData.year || iniData.year)
 
   return combineData(data, chartData)
 }
@@ -157,26 +164,33 @@ export function combineMidiData (iniData: ChorusIni, chartData: ChorusMidi): cha
   data.chart_format = ChartFormat.CHART
 
   // INI DATA
-  data.ini_album_track = parseIntOrNull(iniData.album_track)
   data.ini_album = iniData.album
+  data.ini_album_track = parseIntOrNull(iniData.album_track)
   data.ini_artist = iniData.artist
   data.ini_charter = iniData.charter || iniData.frets
   data.ini_diff_band = parseIntOrNull(iniData.diff_band)
   data.ini_diff_bass = parseIntOrNull(iniData.diff_bass)
   data.ini_diff_bassghl = parseIntOrNull(iniData.diff_bassghl)
+  data.ini_diff_drums_real = parseIntOrNull(iniData.diff_drums_real)
   data.ini_diff_drums = parseIntOrNull(iniData.diff_drums)
+  data.ini_diff_guitar_coop = parseIntOrNull(iniData.diff_guitar_coop)
   data.ini_diff_guitar = parseIntOrNull(iniData.diff_guitar)
   data.ini_diff_guitarghl = parseIntOrNull(iniData.diff_guitarghl)
   data.ini_diff_keys = parseIntOrNull(iniData.diff_keys)
   data.ini_diff_rhythm = parseIntOrNull(iniData.diff_rhythm)
+  data.ini_five_lane_drums = parseIntOrNull(iniData.five_lane_drums)
   data.ini_genre = iniData.genre
   data.ini_icon = iniData.icon
   data.ini_loading_phrase = iniData.loading_phrase
+  data.ini_modchart = parseIntOrNull(iniData.modchart)
   data.ini_name = iniData.name
   data.ini_playlist_track = parseIntOrNull(iniData.playlist_track)
+  data.ini_preview_start_time = parseIntOrNull(iniData.preview_start_time)
+  data.ini_pro_drums = parseIntOrNull(iniData.pro_drums)
   data.ini_song_length = parseIntOrNull(iniData.song_length)
   data.ini_track = parseIntOrNull(iniData.track)
-  data.ini_year = iniData.year || iniData.year
+  data.ini_video_start_time = parseIntOrNull(iniData.video_start_time)
+  data.ini_year = parseIntOrNull(iniData.year || iniData.year)
 
   return combineData(data, chartData)
 }

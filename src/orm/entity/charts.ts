@@ -16,7 +16,7 @@ export class charts {
   @Column({ type: 'int' })
     chart_format: ChartFormat
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', unique: true })
     source_id: string
 
   // INI DATA
@@ -42,7 +42,13 @@ export class charts {
     ini_diff_bassghl?: number
 
   @Column({ type: 'int', nullable: true })
+    ini_diff_drums_real?: number
+
+  @Column({ type: 'int', nullable: true })
     ini_diff_drums?: number
+
+  @Column({ type: 'int', nullable: true })
+    ini_diff_guitar_coop?: number
 
   @Column({ type: 'int', nullable: true })
     ini_diff_guitar?: number
@@ -56,6 +62,9 @@ export class charts {
   @Column({ type: 'int', nullable: true })
     ini_diff_rhythm?: number
 
+  @Column({ type: 'int', default: 0 })
+    ini_five_lane_drums?: number
+
   @Column({ type: 'text', nullable: true })
     ini_genre?: string
 
@@ -65,8 +74,17 @@ export class charts {
   @Column({ type: 'text', nullable: true })
     ini_loading_phrase?: string
 
+  @Column({ type: 'int', default: 0 })
+    ini_modchart?: number
+
   @Column({ type: 'text', nullable: true })
     ini_name?: string
+
+  @Column({ type: 'int', nullable: true })
+    ini_preview_start_time?: number
+
+  @Column({ type: 'int', default: 0 })
+    ini_pro_drums?: number
 
   @Column({ type: 'int', nullable: true })
     ini_playlist_track?: number
@@ -78,7 +96,10 @@ export class charts {
     ini_track?: number
 
   @Column({ type: 'int', nullable: true })
-    ini_year?: string
+    ini_video_start_time?: number
+
+  @Column({ type: 'int', nullable: true })
+    ini_year?: number
 
   // CHART DATA
   @Column({ type: 'int' })
