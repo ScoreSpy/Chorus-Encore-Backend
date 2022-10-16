@@ -17,9 +17,10 @@ import { charts } from './../orm/entity/charts'
 import PQueue from 'p-queue'
 import SnowflakeUtil from './snowflake'
 import archiver from './archive'
+import runtime from './../configs/runtime'
 
 export default async function processSongs (songs: SearchResults) {
-  const queue = new PQueue({ concurrency: 16 })
+  const queue = new PQueue({ concurrency: runtime.driveDownloadThreads })
 
   const keys7z = Array.from(songs.Archives7z.keys())
   for (let i = 0; i < keys7z.length; i++) {

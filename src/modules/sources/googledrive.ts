@@ -7,6 +7,7 @@ import { isValidSongDrive } from '../helpers'
 import processSongs from './../songProcessor'
 import PQueue, { DefaultAddOptions } from 'p-queue'
 import PriorityQueue from 'p-queue/dist/priority-queue'
+import runtime from './../../configs/runtime'
 
 export type SearchResults = { Archives7z: Map<string, drive_v3.Schema$File>, ArchivesRAR: Map<string, drive_v3.Schema$File>, ArchivesZip: Map<string, drive_v3.Schema$File>, SongFolders: Map<string, drive_v3.Schema$File[]> }
 
@@ -97,7 +98,7 @@ export default async function CrawlRecursive () {
     SongFolders: new Map()
   }
 
-  const queue = new PQueue({ concurrency: 12 })
+  const queue = new PQueue({ concurrency: runtime.driveScanThreads })
 
 
   await ScanRecursive(queue, '1p1XuIwYmndRK8Z0VK-uQtnhQEqCBbM9D', driveLinks, foundSongs)
