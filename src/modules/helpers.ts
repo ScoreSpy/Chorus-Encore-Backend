@@ -269,3 +269,13 @@ export async function fileExists (path: string) {
   }
   return true
 }
+
+export async function getRootFiles (path: string): Promise<{ path: string, name: string }[]> {
+  const entries = await readdir(path, { withFileTypes: true })
+
+  const files = entries.
+    filter((entry) => !entry.isDirectory()).
+    map((file) => ({ ...file, path: join(path, file.name) }))
+
+  return files
+}
