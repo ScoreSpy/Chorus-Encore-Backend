@@ -6,6 +6,8 @@ import sharp from 'sharp'
 
 const SupportedFormats = ['.jpeg', '.jpg']
 
+const lookupTable = new Map([['album', [512, 512]]])
+
 export async function getFiles (dir: string): Promise<string[]> {
   const dirents = await readdir(dir, { withFileTypes: true })
 
@@ -23,7 +25,8 @@ export async function ConvertFile (FileLocation: string): Promise<void> {
 
   let buff = null
   try {
-    buff = await sharp(FileLocation).png().toBuffer()
+    const data = lookupTable.get(fileData.name.toLowerCase())
+    buff = await sharp(FileLocation).resize(data[0], data[1]).png().toBuffer()
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(`(${FileLocation}) png conversion error occurred: ${error.message}`)
@@ -34,13 +37,14 @@ export async function ConvertFile (FileLocation: string): Promise<void> {
   console.log(`${fileData.name}${fileData.ext} -> ${fileData.name}.png`)
 }
 
-
 export default async function opusConverter (path: string) {
   const files = await getFiles(path)
 
   const songFileIndex = files.filter((f) => {
     const p = parse(f)
-    return SupportedFormats.includes(p.ext.toLowerCase())
+    if (!SupportedFormats.includes(p.ext.toLowerCase())) { return false }
+    if (!lookupTable.has(p.name.toLowerCase())) { return false }
+    return true
   })
 
   const queue = new PQueue({ concurrency: os.cpus().length })

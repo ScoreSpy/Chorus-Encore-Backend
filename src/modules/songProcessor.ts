@@ -20,7 +20,7 @@ import archiver from './archive'
 import runtime from './../configs/runtime'
 import iniConstructor from './iniConstructor'
 import opusConverter from './converters/opusConverter'
-// import imageConverter from './converters/imageConverter'
+import imageConverter from './converters/imageConverter'
 import webmConverter from './converters/webmConverter'
 
 export default async function processSongs (songs: SearchResults) {
@@ -191,7 +191,7 @@ async function ProcSong (path: string, source_id: string) {
   await writeFile(join(baseFolder, 'song.ini'), iniString)
 
   await opusConverter(baseFolder)
-  // await imageConverter(baseFolder)
+  await imageConverter(baseFolder)
   await webmConverter(baseFolder)
 
   if (await fileExists(dest)) { throw new Error('archive exists') }
