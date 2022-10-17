@@ -1,21 +1,11 @@
-import { readdir, rm } from 'node:fs/promises'
-import { join, parse, resolve } from 'node:path'
-import PQueue from 'p-queue'
+import { getRootFiles } from './../helpers'
+import { join, parse } from 'node:path'
+import { rm } from 'node:fs/promises'
 import ffmpeg from 'fluent-ffmpeg'
 import os from 'os'
+import PQueue from 'p-queue'
 
 const SupportedFormats = ['.mp4', '.avi', '.vp8', '.ogv', '.mpeg'] // '.webm',
-
-export async function getFiles (dir: string): Promise<string[]> {
-  const dirents = await readdir(dir, { withFileTypes: true })
-
-  const files = await Promise.all(dirents.map((dirent) => {
-    const res = resolve(dir, dirent.name)
-    return dirent.isDirectory() ? getFiles(res) : res
-  }))
-
-  return Array.prototype.concat(...files)
-}
 
 export function ConvertFile (FileLocation: string): Promise<void> {
   return new Promise((res, reject) => {
@@ -40,12 +30,11 @@ export function ConvertFile (FileLocation: string): Promise<void> {
   })
 }
 
-
-export default async function opusConverter (path: string) {
-  const files = await getFiles(path)
+export default async function webmConverter (path: string) {
+  const files = await getRootFiles(path)
 
   const songFileIndex = files.filter((f) => {
-    const p = parse(f)
+    const p = parse(f.name)
     return SupportedFormats.includes(p.ext.toLowerCase())
   })
 
@@ -53,11 +42,10 @@ export default async function opusConverter (path: string) {
 
   for (let index = 0; index < songFileIndex.length; index++) {
     queue.add(async () => {
-      await ConvertFile(songFileIndex[index])
-      await rm(songFileIndex[index])
+      await ConvertFile(songFileIndex[index].path)
+      await rm(songFileIndex[index].path)
     })
   }
-
 
   await queue.onIdle()
 }
