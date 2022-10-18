@@ -7,7 +7,7 @@ import { join, parse } from 'path'
 import paths from './../configs/paths'
 import { Readable } from 'typeorm/platform/PlatformTools'
 import Extract7z from './extractors/7z'
-import { fileExists, getFiles, getSupportedFilesDirectory, getSupportedFilesDrive, isValidSongDrive, timeout } from './helpers'
+import { fileExists, getFiles, getSupportedFilesDirectory, getSupportedFilesDrive, isValidSongDrive, SupportedVideoFormats, timeout } from './helpers'
 import { GoogleDrive, SearchResults } from './sources/googledrive'
 import database from './database'
 import { ChartFormat } from './../types'
@@ -134,48 +134,50 @@ async function tryProcessSong (path: string, source_id: string) {
 async function ProcSong (path: string, source_id: string) {
   const dir = await getFiles(path)
 
-  // look for chart files first
-  let baseFolder = ''
   let chartType: ChartFormat = null
 
+  let hasMid = false
+  let hasChart = false
+  let hasVideo = false
+
   for (let i = 0; i < dir.length; i++) {
-    if (dir[i].name.toLowerCase().endsWith('.chart')) {
-      chartType = ChartFormat.CHART
-      baseFolder = parse(dir[i].path).dir
-    }
+    const File = parse(dir[i].name)
+    const FileName = File.name.toLocaleLowerCase()
+    const FileExt = File.ext.toLocaleLowerCase()
+
+    if (FileName === 'notes' && FileExt === '.mid') { hasMid = true }
+    if (FileName === 'notes' && FileExt === '.chart') { hasChart = true }
+    if (FileName === 'video' && SupportedVideoFormats.includes(FileExt)) { hasVideo = true }
   }
 
-  if (chartType === null) {
-    for (let i = 0; i < dir.length; i++) {
-      if (dir[i].name.toLowerCase().endsWith('.mid')) {
-        chartType = ChartFormat.MIDI
-        baseFolder = parse(dir[i].path).dir
-      }
-    }
-  }
-
-  if (chartType === null) {
+  if (!hasChart && !hasMid) {
     throw new Error('no chart found')
   }
 
-  const files = await readdir(baseFolder)
+  if (hasChart) {
+    chartType = ChartFormat.CHART
+  } else {
+    chartType = ChartFormat.MIDI
+  }
+
+  const files = await readdir(path)
   if (!isValidSongDrive(files)) {
     throw new Error('invalid chart folder')
   }
 
-  const supportedFiles = await getSupportedFilesDirectory(baseFolder)
+  const supportedFiles = await getSupportedFilesDirectory(path)
   const iniFile = supportedFiles.filter((s) => s.toLowerCase() === 'song.ini')[0]
-  const iniData = parsers.parseIni(await readFile(join(baseFolder, iniFile)))
+  const iniData = parsers.parseIni(await readFile(join(path, iniFile)))
 
   let data: charts = null
   if (chartType === ChartFormat.CHART) {
     const chartFile = supportedFiles.filter((s) => s.toLowerCase() === 'notes.chart')[0]
-    const chartData = parsers.parseChart(await readFile(join(baseFolder, chartFile)))
+    const chartData = parsers.parseChart(await readFile(join(path, chartFile)))
 
     data = combineChartData(iniData, chartData)
   } else if (chartType === ChartFormat.MIDI) {
     const midiFile = supportedFiles.filter((s) => s.toLowerCase() === 'notes.mid')[0]
-    const midiData = parsers.parseMidi(await readFile(join(baseFolder, midiFile)))
+    const midiData = parsers.parseMidi(await readFile(join(path, midiFile)))
 
     data = combineMidiData(iniData, midiData)
   } else {
@@ -184,18 +186,20 @@ async function ProcSong (path: string, source_id: string) {
 
   data.source_id = source_id
   data.snowflake = SnowflakeUtil.generate(1, 1)
+  data.has_video = hasVideo
+
   const dest = join(paths.store, `${data.snowflake}.tar`)
 
-  await rm(join(baseFolder, iniFile), { force: true })
+  await rm(join(path, iniFile), { force: true })
   const iniString = iniConstructor(data)
-  await writeFile(join(baseFolder, 'song.ini'), iniString)
+  await writeFile(join(path, 'song.ini'), iniString)
 
-  await opusConverter(baseFolder)
-  await imageConverter(baseFolder)
-  await webmConverter(baseFolder)
+  await opusConverter(path)
+  await imageConverter(path)
+  await webmConverter(path)
 
   if (await fileExists(dest)) { throw new Error('archive exists') }
-  const archiveBuffer = (await archiver(baseFolder, `${data.snowflake}.tar`)).buffer
+  const archiveBuffer = (await archiver(path, `${data.snowflake}.tar`)).buffer
 
   await database.charts.save(data)
   await writeFile(dest, archiveBuffer)

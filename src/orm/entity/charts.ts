@@ -19,6 +19,9 @@ export class charts {
   @Column({ type: 'varchar', unique: true })
     source_id: string
 
+  @Column({ type: 'int' })
+    has_video: boolean
+
   // INI DATA
   @Column({ type: 'int', nullable: true })
     ini_album_track?: number
