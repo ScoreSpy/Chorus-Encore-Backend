@@ -133,7 +133,7 @@ export const SupportedChartFormats = ['.mid', '.chart']
 export const SupportedConfigNames = ['song']
 export const SupportedConfigFormats = ['.ini']
 
-export function isSupportedFile (fileName: string): boolean {
+export function isSupportedFile (fileName: string, includeVideo = true): boolean {
   const File = parse(fileName)
   const FileName = File.name.toLocaleLowerCase()
   const FileExt = File.ext.toLocaleLowerCase()
@@ -142,7 +142,7 @@ export function isSupportedFile (fileName: string): boolean {
     return true
   } else if (SupportedConfigNames.includes(FileName) && SupportedConfigFormats.includes(FileExt)) {
     return true
-  } else if (SupportedVideoNames.includes(FileName) && SupportedVideoFormats.includes(FileExt)) {
+  } else if (includeVideo && SupportedVideoNames.includes(FileName) && SupportedVideoFormats.includes(FileExt)) {
     return true
   } else if (SupportedImageNames.includes(FileName) && SupportedImageFormats.includes(FileExt)) {
     return true
@@ -153,7 +153,7 @@ export function isSupportedFile (fileName: string): boolean {
   return false
 }
 
-export async function getSupportedFilesDirectory (directory: string): Promise<string[]> {
+export async function getSupportedFilesDirectory (directory: string, includeVideo = true): Promise<string[]> {
   const files = await readdir(directory)
   const supportedFiles: string[] = []
 
@@ -162,7 +162,7 @@ export async function getSupportedFilesDirectory (directory: string): Promise<st
 
     if (stat.isSymbolicLink()) { continue }
     if (stat.isDirectory()) { continue }
-    if (!isSupportedFile(parse(files[i]).base)) { continue }
+    if (!isSupportedFile(parse(files[i]).base, includeVideo)) { continue }
 
     supportedFiles.push(files[i])
   }

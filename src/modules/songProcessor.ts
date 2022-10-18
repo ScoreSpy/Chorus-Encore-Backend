@@ -171,11 +171,11 @@ async function ProcSong (path: string, source_id: string) {
   const iniFile = supportedFiles.filter((s) => s.toLowerCase() === 'song.ini')[0]
   const iniData = parsers.parseIni(await readFile(join(path, iniFile)))
 
-  if (iniData.delay) { hasFutureBundle = false }
-  if (iniData.hopo_frequency) { hasFutureBundle = false }
-  if (iniData.multiplier_note) { hasFutureBundle = false }
-  if (iniData.sustain_cutoff_threshold) { hasFutureBundle = false }
-  if (iniData.end_events) { hasFutureBundle = false }
+  if (iniData.delay && iniData.delay !== '0') { hasFutureBundle = false }
+  if (iniData.hopo_frequency && iniData.hopo_frequency !== '0') { hasFutureBundle = false }
+  if (iniData.multiplier_note && iniData.multiplier_note !== '116') { hasFutureBundle = false }
+  if (iniData.sustain_cutoff_threshold && iniData.sustain_cutoff_threshold !== '0') { hasFutureBundle = false }
+  if (iniData.end_events && iniData.end_events !== '1') { hasFutureBundle = false }
 
   let data: charts = null
   if (chartType === ChartFormat.CHART) {
@@ -202,7 +202,7 @@ async function ProcSong (path: string, source_id: string) {
     return
   }
   // future bundle generation
-  const dest = join(paths.store, `${data.snowflake}.tar`)
+  const dest = join(paths.store, data.snowflake)
 
   await rm(join(path, iniFile), { force: true })
   const iniString = iniConstructor(data)
@@ -212,9 +212,11 @@ async function ProcSong (path: string, source_id: string) {
   await imageConverter(path)
   await webmConverter(path)
 
-  if (await fileExists(dest)) { throw new Error('archive exists') }
-  const archiveBuffer = (await archiver(path, `${data.snowflake}.tar`)).buffer
+  if (await fileExists(`${dest}.tar`)) { throw new Error('archive exists') }
+  if (await fileExists(`${dest}_v.tar`)) { throw new Error('video archive exists') }
 
   await database.charts.save(data)
-  await writeFile(dest, archiveBuffer)
+
+  await writeFile(`${dest}.tar`, (await archiver(path, `${data.snowflake}.tar`, false)).buffer)
+  if (hasVideo) { await writeFile(`${dest}_v.tar`, (await archiver(path, `${data.snowflake}_v.tar`, true)).buffer) }
 }

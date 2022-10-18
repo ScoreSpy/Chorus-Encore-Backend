@@ -4,9 +4,9 @@ import { readFile } from 'fs/promises'
 import { join } from 'path'
 import { PassThrough } from 'stream'
 
-export default async function CreateArchive (source: string, dest: string) {
+export default async function CreateArchive (source: string, dest: string, includeVideo = true) {
   const archive = archiver('tar', { zlib: { level: 9 } })
-  const packageFiles = await getSupportedFilesDirectory(source)
+  const packageFiles = await getSupportedFilesDirectory(source, includeVideo)
 
   for (let i = 0; i < packageFiles.length; i++) {
     archive.append(await readFile(join(source, packageFiles[i])), { name: packageFiles[i] })
