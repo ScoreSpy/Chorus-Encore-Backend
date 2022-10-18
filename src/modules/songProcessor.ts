@@ -132,6 +132,8 @@ async function tryProcessSong (path: string, source_id: string) {
 }
 
 async function ProcSong (path: string, source_id: string) {
+  let hasFutureBundle = true
+
   const dir = await getFiles(path)
 
   let chartType: ChartFormat = null
@@ -169,6 +171,12 @@ async function ProcSong (path: string, source_id: string) {
   const iniFile = supportedFiles.filter((s) => s.toLowerCase() === 'song.ini')[0]
   const iniData = parsers.parseIni(await readFile(join(path, iniFile)))
 
+  if (iniData.delay) { hasFutureBundle = false }
+  if (iniData.hopo_frequency) { hasFutureBundle = false }
+  if (iniData.multiplier_note) { hasFutureBundle = false }
+  if (iniData.sustain_cutoff_threshold) { hasFutureBundle = false }
+  if (iniData.end_events) { hasFutureBundle = false }
+
   let data: charts = null
   if (chartType === ChartFormat.CHART) {
     const chartFile = supportedFiles.filter((s) => s.toLowerCase() === 'notes.chart')[0]
@@ -187,7 +195,13 @@ async function ProcSong (path: string, source_id: string) {
   data.source_id = source_id
   data.snowflake = SnowflakeUtil.generate(1, 1)
   data.has_video = hasVideo
+  data.has_future_bundle = hasFutureBundle
 
+  if (!hasFutureBundle) {
+    await database.charts.save(data)
+    return
+  }
+  // future bundle generation
   const dest = join(paths.store, `${data.snowflake}.tar`)
 
   await rm(join(path, iniFile), { force: true })

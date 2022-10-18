@@ -16,6 +16,7 @@ export type ChorusIni = {
   album?: string
   artist?: string
   charter?: string
+  delay?: string
   diff_band?: string
   diff_bass?: string
   diff_bassghl?: string
@@ -26,31 +27,25 @@ export type ChorusIni = {
   diff_guitarghl?: string
   diff_keys?: string
   diff_rhythm?: string
+  end_events?: string
   five_lane_drums?: string
   frets?: string
   genre?: string
+  hopo_frequency?: string
   icon?: string
   loading_phrase?: string
   modchart?: string
+  multiplier_note?: string
   name?: string
   playlist_track?: string
   preview_start_time?: string
   pro_drums?: string
   song_length?: string
+  sustain_cutoff_threshold?: string
   track?: string
   video_start_time?: string
   year?: string
 }
-
-
-/*
- *bad functions, block future packaged for
- *delay
- *hopo_frequency
- *multiplier_note
- *sustain_cutoff_threshold
- *end_events
- */
 
 function parse (ini: Buffer): ChorusIni | null {
   let source = Iconv.decode(ini, 'utf8')

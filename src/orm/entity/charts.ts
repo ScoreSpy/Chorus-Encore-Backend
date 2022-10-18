@@ -22,6 +22,9 @@ export class charts {
   @Column({ type: 'int' })
     has_video: boolean
 
+  @Column({ type: 'int' })
+    has_future_bundle: boolean
+
   // INI DATA
   @Column({ type: 'int', nullable: true })
     ini_album_track?: number
