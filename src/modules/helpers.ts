@@ -142,7 +142,7 @@ export function isSupportedFile (fileName: string): boolean {
     return true
   } else if (SupportedConfigNames.includes(FileName) && SupportedConfigFormats.includes(FileExt)) {
     return true
-  } else if (SupportedImageNames.includes(FileName) && SupportedVideoFormats.includes(FileExt)) {
+  } else if (SupportedVideoNames.includes(FileName) && SupportedVideoFormats.includes(FileExt)) {
     return true
   } else if (SupportedImageNames.includes(FileName) && SupportedImageFormats.includes(FileExt)) {
     return true
