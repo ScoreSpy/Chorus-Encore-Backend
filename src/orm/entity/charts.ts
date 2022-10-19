@@ -69,7 +69,7 @@ export class charts {
     ini_diff_rhythm?: number
 
   @Column({ type: 'int', default: 0 })
-    ini_five_lane_drums?: number
+    ini_five_lane_drums?: boolean
 
   @Column({ type: 'text', nullable: true })
     ini_genre?: string
@@ -81,7 +81,7 @@ export class charts {
     ini_loading_phrase?: string
 
   @Column({ type: 'int', default: 0 })
-    ini_modchart?: number
+    ini_modchart?: boolean
 
   @Column({ type: 'text', nullable: true })
     ini_name?: string
@@ -90,7 +90,7 @@ export class charts {
     ini_preview_start_time?: number
 
   @Column({ type: 'int', default: 0 })
-    ini_pro_drums?: number
+    ini_pro_drums?: boolean
 
   @Column({ type: 'int', nullable: true })
     ini_playlist_track?: number
