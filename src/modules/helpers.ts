@@ -34,6 +34,14 @@ export function parseIntOrDefault (data: string | undefined, def: number): numbe
   return value
 }
 
+export function parseBoolOrDefault (data: string | undefined, def: boolean): boolean | null {
+  if (!data) { return def }
+  const value = parseInt(data, 10)
+
+  if (isNaN(value)) { return def }
+  return Boolean(value)
+}
+
 export function ChorusMapBooleanToDifficultyFlags (data: ChorusDiffMapBoolean) {
   let flags = DifficultyFlags.None
   if (!data) { return flags }
