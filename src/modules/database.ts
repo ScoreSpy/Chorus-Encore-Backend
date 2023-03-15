@@ -8,9 +8,9 @@ import { system_logs } from './../orm/entity/system_logs'
 class Database {
   ready: boolean
 
-  system_logs: Repository<system_logs>
+  system_logs!: Repository<system_logs>
 
-  manager: DataSource
+  manager!: DataSource
 
   constructor () {
     this.ready = false
@@ -21,8 +21,10 @@ class Database {
 
     Object.assign(config, {
       options: { encrypt: true },
+      // eslint-disable-next-line array-bracket-newline
       entities: [
-        system_logs,
+        system_logs
+      // eslint-disable-next-line array-bracket-newline
       ],
       bigNumberStrings: false,
       logger: new DatabaseMonitor(),

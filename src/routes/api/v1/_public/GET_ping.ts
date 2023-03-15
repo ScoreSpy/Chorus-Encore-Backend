@@ -9,14 +9,16 @@ const schema = {
     200: {
       type: 'object',
       properties: {
-        response: { type: 'string' },
+        response: { type: 'string' }
       }
     }
   }
 }
 
 export default function GET_fcs_variable (server: FastifyInstance, options: FastifyServerOptions, next: CallableFunction) {
-  server.get<{ }>(route, { preHandler: [], schema }, async (req, res) => {
+  // eslint-disable-next-line require-await
+  server.get(route, { preHandler: [], schema }, async (req, res) => {
+    console.log('owo')
     return res.send({ response: 'pong!' })
   })
 

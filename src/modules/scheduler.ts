@@ -2,7 +2,7 @@ import Cron from 'croner'
 
 class scheduler {
   ready: boolean
-  TaskDoThing: Cron
+  TaskDoThing!: Cron
 
   constructor () {
     this.ready = false
@@ -14,10 +14,10 @@ class scheduler {
 
     await this.MethodDoThing()
     this.TaskDoThing = Cron('0 0 * * *', () => { this.MethodDoThing() })
-    console.log(`TaskUnban Scheduled: ${this.TaskDoThing.next()}`)
+    console.log(`TaskUnban Scheduled: ${this.TaskDoThing.nextRun()}`)
   }
 
-  private async MethodDoThing () {
+  private MethodDoThing () {
     console.log('Running DoThing')
   }
 }

@@ -3,23 +3,23 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeor
 @Entity()
 export class system_logs {
   @PrimaryGeneratedColumn()
-    id: number
+    id!: number
 
   @Column('bigint', { nullable: true })
-    author: string
+    author!: string | null
 
   @Column('longtext')
-    log: string
+    log!: string
 
   @Column('longtext', { nullable: true })
-    stack: string
+    stack!: string | null
 
   @Column()
-    type: number
+    type!: number
 
   @Column()
-    module: string
+    module!: string
 
   @CreateDateColumn({ type: 'datetime' })
-    time: Date
+    time!: Date
 }

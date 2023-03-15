@@ -3,6 +3,8 @@
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "declaration": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "lib": ["es2018"],
     "module": "commonjs",
@@ -11,10 +13,12 @@
     "noImplicitReturns": true,
     "outDir": "build",
     "pretty": true,
+    "resolveJsonModule": true,
     "rootDir": ".",
     "sourceMap": true,
     "strict": true,
-    "target": "es2018"
+    "target": "es2018",
+    "useUnknownInCatchVariables": false
   },
   "include": [
     "src/**/*.ts",

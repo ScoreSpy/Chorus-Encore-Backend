@@ -5,11 +5,8 @@ import fastify from 'fastify'
 import fastifyCookie from '@fastify/cookie'
 import fastifySession from '@fastify/session'
 import fileUpload from 'fastify-file-upload'
-import imageGenerator from './modules/imageGeneration'
-import ip from './modules/ip'
 import logger from './modules/log'
 import overides from './configs/json/overides.json'
-import prometheus from './modules/prometheus'
 import redis from 'redis'
 import redisModule from './modules/redis'
 import sessionConfig from './configs/session'
@@ -33,15 +30,9 @@ const RedisStore = connectRedis(fastifySession as any)
 async function Server () {
   const server = fastify({ trustProxy: true, bodyLimit: 1048576 * 50, maxParamLength: Number.MAX_SAFE_INTEGER })
 
-  server.addHook('onRequest', (request, reply, done) => {
-    ip(request, null, null).catch(console.error)
-    return done()
-  })
+  server.addHook('onRequest', (request, reply, done) => done())
 
-  server.addHook('onResponse', (request, reply, done) => {
-    prometheus.responseCounters(request, reply, reply.getResponseTime())
-    return done()
-  })
+  server.addHook('onResponse', (request, reply, done) => done())
 
   server.addHook('onError', (request, reply, error, done) => {
     log.error(error)
@@ -84,8 +75,6 @@ async function Server () {
     }
   })
 
-  server.register(formbody)
-
   if (overides.devMode) {
     server.register((await import('fastify-oas')).default, {
       routePrefix: '/docs',
@@ -114,12 +103,6 @@ async function Server () {
       }
     })
   }
-
-  console.log('init imageGenerator')
-  await imageGenerator.init()
-
-  console.log('init prometheus')
-  prometheus.init()
 
   console.log('init redisModule')
   redisModule.init()

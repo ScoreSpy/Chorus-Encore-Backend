@@ -8,34 +8,34 @@ import config from './json/database.json'
 
 const output = {
   get TYPEORM_CONNECTION (): string {
-    if ('TYPEORM_CONNECTION' in process.env) { return process.env.TYPEORM_CONNECTION }
+    if ('TYPEORM_CONNECTION' in process.env) { return process.env.TYPEORM_CONNECTION as string }
     return config.type
   },
   get TYPEORM_DATABASE (): string {
-    if ('TYPEORM_DATABASE' in process.env) { return process.env.TYPEORM_DATABASE }
+    if ('TYPEORM_DATABASE' in process.env) { return process.env.TYPEORM_DATABASE as string }
     return config.database
   },
   get TYPEORM_HOST (): string {
-    if ('TYPEORM_HOST' in process.env) { return process.env.TYPEORM_HOST }
+    if ('TYPEORM_HOST' in process.env) { return process.env.TYPEORM_HOST as string }
     return config.host
   },
   get TYPEORM_LOGGING (): boolean {
-    if ('TYPEORM_LOGGING' in process.env) { return process.env.TYPEORM_LOGGING.toLowerCase() === 'true' }
+    if ('TYPEORM_LOGGING' in process.env) { return (process.env.TYPEORM_LOGGING as string).toLowerCase() === 'true' }
     return config.logging
   },
   get TYPEORM_PASSWORD (): string {
-    if ('TYPEORM_PASSWORD' in process.env) { return process.env.TYPEORM_PASSWORD }
+    if ('TYPEORM_PASSWORD' in process.env) { return process.env.TYPEORM_PASSWORD as string }
     return config.password
   },
   get TYPEORM_PORT (): number {
-    if ('TYPEORM_PORT' in process.env) { return parseInt(process.env.TYPEORM_PORT, 10) }
+    if ('TYPEORM_PORT' in process.env) { return parseInt(process.env.TYPEORM_PORT as string, 10) }
     return config.port
   },
   get TYPEORM_SYNCHRONIZE (): boolean {
     return false
   },
   get TYPEORM_USERNAME (): string {
-    if ('TYPEORM_USERNAME' in process.env) { return process.env.TYPEORM_USERNAME }
+    if ('TYPEORM_USERNAME' in process.env) { return process.env.TYPEORM_USERNAME as string }
     return config.username
   }
 }

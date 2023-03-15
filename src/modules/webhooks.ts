@@ -1,6 +1,6 @@
 import { EmbedBuilder, WebhookClient } from 'discord.js'
 import confid from '../configs/webhook'
-import overides from '../configs/json/overides.json'
+import overides from './../configs/json/overides.json'
 import type { FastifyRequest } from 'fastify'
 
 class Hooks {
@@ -98,17 +98,16 @@ class Hooks {
     return this.errorClient.send({ embeds: [embed] })
   }
 
-  public async routeError (req: FastifyRequest, error: Error): Promise<unknown> {
+  public routeError (req: FastifyRequest, error: Error): Promise<unknown> {
     console.error('routeError')
     console.error(error)
 
     if (overides.disableWebHooks === true) { return Promise.resolve() }
     if (overides.devMode === true) { return Promise.resolve() }
 
-    
     if (error.message) {
-      if (error.message === 'body must have required property \'hCaptchaToken\'') { return }
-    } 
+      if (error.message === 'body must have required property \'hCaptchaToken\'') { return Promise.resolve() }
+    }
 
     const embed = new EmbedBuilder()
     embed.addFields({ name: error.name, value: error.message.substring(0, 1000) })
@@ -116,10 +115,6 @@ class Hooks {
     if (error.stack) {
       const body = error.stack.substring(0, 1900)
       embed.setDescription(`\`\`\`js\n${body}\n\`\`\``)
-    }
-
-    if (req.session && req.session.user) {
-      embed.addFields({ name: 'User', value: `${req.session.user.username} (${req.session.user.snowflake})` })
     }
 
     embed.setTimestamp()
