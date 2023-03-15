@@ -145,3 +145,6 @@ dist
 
 # custom
 [Bb]uild/
+src/configs/json
+env.json
+*.exe
