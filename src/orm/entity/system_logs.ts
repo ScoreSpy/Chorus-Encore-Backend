@@ -14,10 +14,10 @@ export class system_logs {
   @Column('longtext', { nullable: true })
     stack!: string | null
 
-  @Column()
+  @Column({ type: 'int' })
     type!: number
 
-  @Column()
+  @Column({ type: 'text' })
     module!: string
 
   @CreateDateColumn({ type: 'datetime' })
