@@ -13,8 +13,9 @@ const schema = {
         type: 'array',
         items: {
           type: 'object',
-          required: ['iniData', 'chartData', 'files'],
+          required: ['checksum', 'iniData', 'chartData', 'files'],
           properties: {
+            checksum: { type: 'string' },
             iniData: {
               type: 'object',
               required: [],
@@ -252,6 +253,7 @@ export type ChorusDiffMapNumber = {
 }
 
 export type SongData = {
+  checksum: string,
   iniData: {
     album_track?: string
     album?: string
