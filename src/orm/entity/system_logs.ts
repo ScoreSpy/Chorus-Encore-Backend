@@ -5,9 +5,6 @@ export class system_logs {
   @PrimaryGeneratedColumn()
     id!: number
 
-  @Column('bigint', { nullable: true })
-    author!: string | null
-
   @Column('longtext')
     log!: string
 
