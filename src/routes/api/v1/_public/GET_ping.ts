@@ -15,7 +15,7 @@ const schema = {
   }
 }
 
-export default function GET_fcs_variable (server: FastifyInstance, options: FastifyServerOptions, next: CallableFunction) {
+export default function GET_ping (server: FastifyInstance, options: FastifyServerOptions, next: CallableFunction) {
   // eslint-disable-next-line require-await
   server.get(route, { preHandler: [], schema }, async (req, res) => {
     console.log('owo')

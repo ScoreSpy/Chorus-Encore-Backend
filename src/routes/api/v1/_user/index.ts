@@ -1,11 +1,9 @@
 import { FastifyInstance, FastifyServerOptions } from 'fastify'
 
-import RoutePublic from './_public'
-import Routeuser from './_user'
+import POST_ingestSongs from './POST_ingestSongs'
 
 export default function RouteIndex (server: FastifyInstance, options: FastifyServerOptions, next: CallableFunction) {
-  server.register(RoutePublic, { prefix: '/public' })
-  server.register(Routeuser, { prefix: '/user' })
+  server.register(POST_ingestSongs)
 
   next()
 }
