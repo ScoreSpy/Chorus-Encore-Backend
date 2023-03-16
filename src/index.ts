@@ -14,6 +14,7 @@ import sessionConfig from './configs/session'
 import v1Handler from './routes/api/v1/'
 import webhooks from './modules/webhooks'
 import webserverConfig from './configs/webserver'
+import ScanCE from './modules/googleDrive'
 
 declare module 'fastify' {
   interface Session {
@@ -92,6 +93,8 @@ async function Server () {
 
   server.listen({ host: webserverConfig.host, port: webserverConfig.port })
   console.log(`server listening on http://${webserverConfig.host}:${webserverConfig.port}`)
+
+  await ScanCE()
 
   return server
 }
