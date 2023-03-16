@@ -90,8 +90,8 @@ async function Server () {
 
   server.register(v1Handler, { prefix: '/api/v1' })
 
-  server.listen({ port: webserverConfig.port, host: webserverConfig.host })
-  console.log(`server listening on http://${webserverConfig.host}:${webserverConfig.host}`)
+  server.listen({ host: webserverConfig.host, port: webserverConfig.port })
+  console.log(`server listening on http://${webserverConfig.host}:${webserverConfig.port}`)
 
   return server
 }
