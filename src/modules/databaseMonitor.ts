@@ -15,7 +15,7 @@ export class DatabaseMonitor implements Logger {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   logQuerySlow (time: number, query: string, _params: string[]) {
     if (devMode) {
-      // console.log(`[${time}] ${query}`)
+      console.log(`[${time}] ${query}`)
     }
   }
 
