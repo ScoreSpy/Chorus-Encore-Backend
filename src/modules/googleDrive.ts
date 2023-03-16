@@ -1,23 +1,50 @@
 import { drive_v3, google } from 'googleapis'
 import googleCreds from './../configs/google'
+import { deleteMissingFilesFromDb, insertNewFilesToDb } from './database/archives'
 
-async function searchDriveFolder (folderId: string, drive: drive_v3.Drive, foundFiles: drive_v3.Schema$File[] = []): Promise<drive_v3.Schema$File[]> {
-  const { data: { files } } = await drive.files.list({ q: `'${folderId}' in parents`, fields: 'nextPageToken, files(id, name, mimeType)' })
-  if (!files) { return foundFiles }
+export interface File {
+  id: string
+  name: string
+  mimeType: string
+  md5Checksum: string
+  folderId: string
+  createdTime: Date
+}
 
-  const ceFiles = files.filter((file) => file.mimeType !== 'application/vnd.google-apps.folder' && file.name && file.name.endsWith('.ce'))
-  foundFiles.push(...ceFiles)
+async function findFilesWithExtension (folderId: string, extension: string, drive: drive_v3.Drive): Promise<File[]> {
+  const files: File[] = []
 
-  const subfolders = files.filter((file) => file.mimeType === 'application/vnd.google-apps.folder')
+  const query = `'${folderId}' in parents and trashed = false`
+  const { data } = await drive.files.list({ q: query, fields: 'files(createdTime, modifiedTime, id, name, mimeType, md5Checksum, parents)' })
 
-  for (const subfolder of subfolders) {
-    const subfolderId = subfolder.id
-    if (!subfolderId) { continue }
+  if (!data) { return files }
+  if (!data.files) { return files }
 
-    await searchDriveFolder(subfolderId, drive, foundFiles)
+  for (const file of data.files) {
+    if (!file || !file.id) { continue }
+
+    if (file.mimeType === 'application/vnd.google-apps.folder') {
+      const subFiles = await findFilesWithExtension(file.id, extension, drive)
+
+      files.push(...subFiles.map((s) => {
+        s.createdTime = new Date(file.createdTime as string)
+        return s
+      }))
+    } else if (file.name && file.name.endsWith(`.${extension}`)) {
+      if (!file.mimeType || !file.md5Checksum) { continue }
+      files.push({ id: file.id, name: file.name, mimeType: file.mimeType, md5Checksum: file.md5Checksum, folderId, createdTime: new Date(file.createdTime as string) })
+    }
   }
 
-  return foundFiles
+  return files
+}
+
+async function updateEntries (files: File[]) {
+  const deletedEntries = await deleteMissingFilesFromDb(files)
+  console.log(`Removed ${deletedEntries.length} orphaned files`)
+
+  const insertedEntries = await insertNewFilesToDb(files)
+  console.log(`Inserted ${insertedEntries.length} new files`)
 }
 
 export default async function ScanCE () {
@@ -30,8 +57,13 @@ export default async function ScanCE () {
   const drive = google.drive({ version: 'v3', auth: authClient })
 
   const rootFolderId = '10X6qBMXU21HBmQUQrsq67pZQwi5IR8Ye'
-  const ceFiles = await searchDriveFolder(rootFolderId, drive)
+  const extension = 'ce'
+
+  const ceFiles = await findFilesWithExtension(rootFolderId, extension, drive)
 
   console.log(`Found ${ceFiles.length} files with the ".ce" extension.`)
-  console.log(ceFiles.map((file) => file.name))
+  console.log(ceFiles)
+
+  await updateEntries(ceFiles)
 }
+

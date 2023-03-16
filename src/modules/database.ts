@@ -3,15 +3,15 @@ import { DataSource, Repository } from 'typeorm'
 import { DatabaseMonitor } from './databaseMonitor'
 import config from './../configs/database'
 
+import { archives } from '../orm/entity/archives'
 import { charts } from './../orm/entity/charts'
-import { remote_charts } from './../orm/entity/remote_charts'
 import { system_logs } from './../orm/entity/system_logs'
 
 class Database {
   ready: boolean
 
+  archives!: Repository<archives>
   charts!: Repository<charts>
-  remote_charts!: Repository<remote_charts>
   system_logs!: Repository<system_logs>
 
   manager!: DataSource
@@ -21,13 +21,14 @@ class Database {
   }
 
   async init () {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const connectionOptions: any = config
 
     Object.assign(config, {
       options: { encrypt: true },
       entities: [
+        archives,
         charts,
-        remote_charts,
         system_logs
       ],
       bigNumberStrings: false,
@@ -41,8 +42,8 @@ class Database {
     const AppDataSource = new DataSource(connectionOptions)
     this.manager = await AppDataSource.initialize()
 
+    this.archives = this.manager.getRepository(archives)
     this.charts = this.manager.getRepository(charts)
-    this.remote_charts = this.manager.getRepository(remote_charts)
     this.system_logs = this.manager.getRepository(system_logs)
 
     await this.system_logs.insert({ log: 'Database Connected', type: 0, module: 'Database' })
