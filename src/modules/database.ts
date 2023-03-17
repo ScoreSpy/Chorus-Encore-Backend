@@ -4,22 +4,30 @@ import { DatabaseMonitor } from './databaseMonitor'
 import config from './../configs/database'
 
 import { archives } from '../orm/entity/archives'
-import * as charts from './../orm/entity/charts'
 import { system_logs } from './../orm/entity/system_logs'
+
+import { Chart } from './../orm/entity/charts'
+import { Chart_NoteCount } from './../orm/entity/chart_notecount'
+import { Chart_MaxNps } from './../orm/entity/chart_maxnps'
+import { Chart_NoteIssue } from './../orm/entity/chart_noteissue'
+import { Chart_TrackIssue } from './../orm/entity/chart_trackissue'
+import { Chart_Hash } from './../orm/entity/chart_hash'
+import { Chart_Files } from './../orm/entity/chart_files'
+import { Chart_Config } from './../orm/entity/chart_config'
 
 class Database {
   ready: boolean
 
   archives!: Repository<archives>
 
-  chart!: Repository<charts.Chart>
-  chart_NoteCount!: Repository<charts.Chart_NoteCount>
-  chart_MaxNps!: Repository<charts.Chart_MaxNps>
-  chart_NoteIssue!: Repository<charts.Chart_NoteIssue>
-  chart_TrackIssue!: Repository<charts.Chart_TrackIssue>
-  chart_Hash!: Repository<charts.Chart_Hash>
-  chart_Files!: Repository<charts.Chart_Files>
-  chart_Config!: Repository<charts.Chart_Config>
+  chart!: Repository<Chart>
+  chart_NoteCount!: Repository<Chart_NoteCount>
+  chart_MaxNps!: Repository<Chart_MaxNps>
+  chart_NoteIssue!: Repository<Chart_NoteIssue>
+  chart_TrackIssue!: Repository<Chart_TrackIssue>
+  chart_Hash!: Repository<Chart_Hash>
+  chart_Files!: Repository<Chart_Files>
+  chart_Config!: Repository<Chart_Config>
 
   system_logs!: Repository<system_logs>
 
@@ -38,14 +46,14 @@ class Database {
       entities: [
         archives,
 
-        charts.Chart,
-        charts.Chart_NoteCount,
-        charts.Chart_MaxNps,
-        charts.Chart_NoteIssue,
-        charts.Chart_TrackIssue,
-        charts.Chart_Hash,
-        charts.Chart_Files,
-        charts.Chart_Config,
+        Chart,
+        Chart_NoteCount,
+        Chart_MaxNps,
+        Chart_NoteIssue,
+        Chart_TrackIssue,
+        Chart_Hash,
+        Chart_Files,
+        Chart_Config,
 
         system_logs
       ],
@@ -62,14 +70,14 @@ class Database {
 
     this.archives = this.manager.getRepository(archives)
 
-    this.chart = this.manager.getRepository(charts.Chart)
-    this.chart_NoteCount = this.manager.getRepository(charts.Chart_NoteCount)
-    this.chart_MaxNps = this.manager.getRepository(charts.Chart_MaxNps)
-    this.chart_NoteIssue = this.manager.getRepository(charts.Chart_NoteIssue)
-    this.chart_TrackIssue = this.manager.getRepository(charts.Chart_TrackIssue)
-    this.chart_Hash = this.manager.getRepository(charts.Chart_Hash)
-    this.chart_Files = this.manager.getRepository(charts.Chart_Files)
-    this.chart_Config = this.manager.getRepository(charts.Chart_Config)
+    this.chart = this.manager.getRepository(Chart)
+    this.chart_NoteCount = this.manager.getRepository(Chart_NoteCount)
+    this.chart_MaxNps = this.manager.getRepository(Chart_MaxNps)
+    this.chart_NoteIssue = this.manager.getRepository(Chart_NoteIssue)
+    this.chart_TrackIssue = this.manager.getRepository(Chart_TrackIssue)
+    this.chart_Hash = this.manager.getRepository(Chart_Hash)
+    this.chart_Files = this.manager.getRepository(Chart_Files)
+    this.chart_Config = this.manager.getRepository(Chart_Config)
 
     this.system_logs = this.manager.getRepository(system_logs)
 

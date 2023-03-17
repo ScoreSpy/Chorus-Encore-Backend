@@ -1,4 +1,9 @@
-import { Chart, Chart_Hash, Chart_MaxNps, Chart_NoteCount, Chart_NoteIssue, Chart_TrackIssue } from '../orm/entity/charts'
+import { Chart } from '../orm/entity/charts'
+import { Chart_Hash } from '../orm/entity/chart_hash'
+import { Chart_MaxNps } from '../orm/entity/chart_maxnps'
+import { Chart_NoteCount } from '../orm/entity/chart_notecount'
+import { Chart_NoteIssue } from '../orm/entity/chart_noteissue'
+import { Chart_TrackIssue } from '../orm/entity/chart_trackissue'
 import database from './database'
 
 export enum Instrument {
