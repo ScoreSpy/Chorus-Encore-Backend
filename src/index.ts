@@ -24,6 +24,7 @@ declare module 'fastify' {
 const log = logger.createContext('server')
 
 const SESSION_TTL = (24 * 60 * 60 * 1000) * 15
+const BODY_SIZE_LIMIT = 50 * 1024 * 1024
 
 const redisClient = createClient({ url: 'redis://127.0.0.1:6379', database: 9 })
 // const RedisStore = connectRedis(fastifySession as any)
@@ -34,7 +35,7 @@ const redisStore = new RedisStore({
 })
 
 async function Server () {
-  const server = fastify({ trustProxy: true, bodyLimit: 1048576 * 50, maxParamLength: Number.MAX_SAFE_INTEGER })
+  const server = fastify({ trustProxy: true, bodyLimit: BODY_SIZE_LIMIT, maxParamLength: Number.MAX_SAFE_INTEGER })
 
   server.addHook('onRequest', (request, reply, done) => done())
 
@@ -59,7 +60,7 @@ async function Server () {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any)
 
-  server.register(fileUpload, { limits: { fileSize: 50 * 1024 * 1024 } })
+  server.register(fileUpload, { limits: { fileSize: BODY_SIZE_LIMIT } })
 
   server.setErrorHandler((error, req, reply) => {
     log.error(error)
