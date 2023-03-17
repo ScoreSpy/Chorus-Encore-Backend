@@ -5,6 +5,8 @@ export function StringToNumberOrNull (input: string | undefined): number | null 
 
   const value = parseInt(input, 10)
   if (isNaN(value)) { return null }
+  if (value < 0) { return null }
+
   return value
 }
 
