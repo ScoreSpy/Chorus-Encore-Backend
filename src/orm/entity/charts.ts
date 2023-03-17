@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable max-classes-per-file */
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
 
 
 export enum Instrument {
@@ -103,10 +103,12 @@ export class Chart {
   @OneToMany(() => Chart_Hash, (hash) => hash.Chart, { cascade: true })
     hashes!: Chart_Hash[]
 
-  @OneToMany(() => Chart_Files, (files) => files.Chart, { cascade: true })
+  @OneToOne(() => Chart_Files, (files) => files.Chart)
+  @JoinColumn()
     files!: Chart_Files
 
-  @OneToMany(() => Chart_Config, (config) => config.Chart, { cascade: true })
+  @OneToOne(() => Chart_Config, (config) => config.Chart)
+  @JoinColumn()
     config!: Chart_Config
 }
 
@@ -292,7 +294,7 @@ export class Chart_Config {
   @Column({ type: 'int', nullable: true })
     year?: number
 
-  @ManyToOne(() => Chart, (c) => c.config)
+  @OneToOne(() => Chart, (c) => c.config)
     Chart!: Chart
 }
 
@@ -373,6 +375,6 @@ export class Chart_Files {
   @Column({ type: 'int', default: 0 })
     config_ini!: boolean
 
-  @ManyToOne(() => Chart, (c) => c.files)
+  @OneToOne(() => Chart, (c) => c.files)
     Chart!: Chart
 }
