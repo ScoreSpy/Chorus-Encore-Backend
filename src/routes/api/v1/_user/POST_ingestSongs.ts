@@ -350,12 +350,7 @@ export type SongData = {
 export default function POST_ingestSongs (server: FastifyInstance, options: FastifyServerOptions, next: CallableFunction) {
   // eslint-disable-next-line require-await
   server.post<{ Body: { songs: SongData[] } }>(route, { preHandler: [], schema }, async (req, res) => {
-    console.log(req.body)
-    console.log('owo')
-
     for (const chart of req.body.songs) {
-      console.log(chart)
-
       const entry = new Chart()
       entry.instruments = chart.chartData.instruments
       entry.hasSoloSections = chart.chartData.hasSoloSections
@@ -475,8 +470,7 @@ export default function POST_ingestSongs (server: FastifyInstance, options: Fast
       entry.config = config
 
       // save the Chart object
-      const savedChart = await database.chart.save(entry)
-      console.log(savedChart)
+      await database.chart.save(entry)
     }
 
 
