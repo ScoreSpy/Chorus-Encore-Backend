@@ -32,6 +32,7 @@ async function findFilesWithExtension (folderId: string, extension: string, driv
       }))
     } else if (file.name && file.name.endsWith(`.${extension}`)) {
       if (!file.mimeType || !file.md5Checksum) { continue }
+      file.md5Checksum = file.md5Checksum.toUpperCase()
       files.push({ id: file.id, name: file.name, mimeType: file.mimeType, md5Checksum: file.md5Checksum, folderId, createdTime: new Date(file.createdTime as string) })
     }
   }
