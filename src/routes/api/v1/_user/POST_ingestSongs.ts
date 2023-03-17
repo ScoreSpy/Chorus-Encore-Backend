@@ -14,9 +14,8 @@ const schema = {
         type: 'array',
         items: {
           type: 'object',
-          required: ['checksum', 'iniData', 'chartData', 'files'],
+          required: ['iniData', 'chartData', 'files'],
           properties: {
-            checksum: { type: 'string' },
             iniData: {
               type: 'object',
               required: [],
