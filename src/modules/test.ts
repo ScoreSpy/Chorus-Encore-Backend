@@ -70,11 +70,15 @@ export async function test () {
 
   // Chart_NoteIssue
   const noteIssues1 = new Chart_NoteIssue()
+  noteIssues1.instrument = Instrument.Guitar
+  noteIssues1.difficulty = Difficulty.Hard
   noteIssues1.issueType = NoteIssueType.BadSustainGap
   noteIssues1.tick = 100
   noteIssues1.time = 10.0
 
   const noteIssues2 = new Chart_NoteIssue()
+  noteIssues2.instrument = Instrument.Drums
+  noteIssues2.difficulty = Difficulty.Hard
   noteIssues2.issueType = NoteIssueType.ThreeNoteDrumChord
   noteIssues2.tick = 200
   noteIssues2.time = 20.0
