@@ -1,4 +1,5 @@
 import { FastifyInstance, FastifyServerOptions } from 'fastify'
+import { ChartIssueType, Difficulty, Instrument, NoteIssueType, TrackIssueType } from '../../../../orm/entity/charts'
 
 const route = '/ingestSongs'
 const schema = {
@@ -57,118 +58,82 @@ const schema = {
             },
             chartData: {
               type: 'object',
-              required: ['hasSections', 'hasStarPower', 'hasForced', 'hasSoloSections', 'hasTap', 'hasLyrics', 'is120', 'hasBrokenNotes', 'hasOpen', 'noteCounts', 'hashes', 'chartMeta'],
+              required: ['instruments', 'hasSoloSections', 'hasLyrics', 'hasForcedNotes', 'hasTapNotes', 'hasOpenNotes', 'has2xKick', 'chartIssues', 'tempoMapHash', 'tempoMarkerCount', 'length', 'effectiveLength', 'noteissues', 'trackIssues', 'noteCounts', 'maxNps', 'hashes'],
               properties: {
-                hasSections: { type: 'boolean' },
-                hasStarPower: { type: 'boolean' },
-                hasForced: { type: 'boolean' },
+                instruments: { type: 'number' },
                 hasSoloSections: { type: 'boolean' },
-                hasTap: { type: 'boolean' },
                 hasLyrics: { type: 'boolean' },
-                is120: { type: 'boolean' },
-                hasBrokenNotes: { type: 'boolean' },
-                hasOpen: {
-                  type: 'object',
-                  required: [],
-                  properties: {
-                    guitar: { type: 'boolean' },
-                    bass: { type: 'boolean' },
-                    rhythm: { type: 'boolean' },
-                    keys: { type: 'boolean' },
-                    drums: { type: 'boolean' },
-                    guitarghl: { type: 'boolean' },
-                    bassghl: { type: 'boolean' }
+                hasForcedNotes: { type: 'boolean' },
+                hasTapNotes: { type: 'boolean' },
+                hasOpenNotes: { type: 'boolean' },
+                has2xKick: { type: 'boolean' },
+                chartIssues: { type: 'number' },
+                tempoMapHash: { type: 'string' },
+                tempoMarkerCount: { type: 'number' },
+                length: { type: 'number' },
+                effectiveLength: { type: 'number' },
+                noteissues: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    required: [],
+                    properties: {
+                      instrument: { type: 'number' },
+                      difficulty: { type: 'number' },
+                      issueType: { type: 'number' },
+                      tick: { type: 'number' },
+                      time: { type: 'number' }
+                    }
+                  }
+                },
+                trackIssues: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    required: [],
+                    properties: {
+                      instrument: { type: 'number' },
+                      difficulty: { type: 'number' },
+                      trackIssues: { type: 'number' }
+                    }
                   }
                 },
                 noteCounts: {
-                  type: 'object',
-                  required: [],
-                  properties: {
-                    guitar: {
-                      type: 'object',
-                      required: ['e', 'm', 'h', 'x'],
-                      properties: { e: { type: 'number' }, m: { type: 'number' }, h: { type: 'number' }, x: { type: 'number' } }
-                    },
-                    bass: {
-                      type: 'object',
-                      required: ['e', 'm', 'h', 'x'],
-                      properties: { e: { type: 'number' }, m: { type: 'number' }, h: { type: 'number' }, x: { type: 'number' } }
-                    },
-                    rhythm: {
-                      type: 'object',
-                      required: ['e', 'm', 'h', 'x'],
-                      properties: { e: { type: 'number' }, m: { type: 'number' }, h: { type: 'number' }, x: { type: 'number' } }
-                    },
-                    keys: {
-                      type: 'object',
-                      required: ['e', 'm', 'h', 'x'],
-                      properties: { e: { type: 'number' }, m: { type: 'number' }, h: { type: 'number' }, x: { type: 'number' } }
-                    },
-                    drums: {
-                      type: 'object',
-                      required: ['e', 'm', 'h', 'x'],
-                      properties: { e: { type: 'number' }, m: { type: 'number' }, h: { type: 'number' }, x: { type: 'number' } }
-                    },
-                    guitarghl: {
-                      type: 'object',
-                      required: ['e', 'm', 'h', 'x'],
-                      properties: { e: { type: 'number' }, m: { type: 'number' }, h: { type: 'number' }, x: { type: 'number' } }
-                    },
-                    bassghl: {
-                      type: 'object',
-                      required: ['e', 'm', 'h', 'x'],
-                      properties: { e: { type: 'number' }, m: { type: 'number' }, h: { type: 'number' }, x: { type: 'number' } }
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    required: [],
+                    properties: {
+                      instrument: { type: 'number' },
+                      difficulty: { type: 'number' },
+                      count: { type: 'number' }
+                    }
+                  }
+                },
+                maxNps: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    required: [],
+                    properties: {
+                      instrument: { type: 'number' },
+                      difficulty: { type: 'number' },
+                      tick: { type: 'number' },
+                      time: { type: 'number' },
+                      nps: { type: 'number' }
                     }
                   }
                 },
                 hashes: {
-                  type: 'object',
-                  required: ['file'],
-                  properties: {
-                    file: { type: 'string' },
-                    guitar: {
-                      type: 'object',
-                      required: ['e', 'm', 'h', 'x'],
-                      properties: { e: { type: 'string' }, m: { type: 'string' }, h: { type: 'string' }, x: { type: 'string' } }
-                    },
-                    bass: {
-                      type: 'object',
-                      required: ['e', 'm', 'h', 'x'],
-                      properties: { e: { type: 'string' }, m: { type: 'string' }, h: { type: 'string' }, x: { type: 'string' } }
-                    },
-                    rhythm: {
-                      type: 'object',
-                      required: ['e', 'm', 'h', 'x'],
-                      properties: { e: { type: 'string' }, m: { type: 'string' }, h: { type: 'string' }, x: { type: 'string' } }
-                    },
-                    keys: {
-                      type: 'object',
-                      required: ['e', 'm', 'h', 'x'],
-                      properties: { e: { type: 'string' }, m: { type: 'string' }, h: { type: 'string' }, x: { type: 'string' } }
-                    },
-                    drums: {
-                      type: 'object',
-                      required: ['e', 'm', 'h', 'x'],
-                      properties: { e: { type: 'string' }, m: { type: 'string' }, h: { type: 'string' }, x: { type: 'string' } }
-                    },
-                    guitarghl: {
-                      type: 'object',
-                      required: ['e', 'm', 'h', 'x'],
-                      properties: { e: { type: 'string' }, m: { type: 'string' }, h: { type: 'string' }, x: { type: 'string' } }
-                    },
-                    bassghl: {
-                      type: 'object',
-                      required: ['e', 'm', 'h', 'x'],
-                      properties: { e: { type: 'string' }, m: { type: 'string' }, h: { type: 'string' }, x: { type: 'string' } }
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    required: [],
+                    properties: {
+                      instrument: { type: 'number' },
+                      difficulty: { type: 'number' },
+                      hash: { type: 'string' }
                     }
-                  }
-                },
-                chartMeta: {
-                  type: 'object',
-                  required: [],
-                  properties: {
-                    length: { type: 'number' },
-                    effectiveLength: { type: 'number' }
                   }
                 }
               }
@@ -288,46 +253,88 @@ export type SongData = {
     video_start_time?: string
     year?: string
   },
-  chartData: { },
+  chartData: {
+    instruments: Instrument
+    hasSoloSections: boolean
+    hasLyrics: boolean
+    hasForcedNotes: boolean
+    hasTapNotes: boolean
+    hasOpenNotes: boolean
+    has2xKick: boolean
+    chartIssues: ChartIssueType
+    tempoMapHash: string
+    tempoMarkerCount: number
+    length: number
+    effectiveLength: number
+    noteissues: {
+      instrument: Instrument
+      difficulty: Difficulty
+      issueType: NoteIssueType
+      tick: number
+      time: number
+    }[],
+    trackIssues: {
+      instrument: Instrument
+      difficulty: Difficulty
+      trackIssues: TrackIssueType
+    }[],
+    noteCounts: {
+      instrument: Instrument
+      difficulty: Difficulty
+      count: number
+    }[],
+    maxNps: {
+      instrument: Instrument
+      difficulty: Difficulty
+      tick: number
+      time: number
+      nps: number
+    }[],
+    hashes: {
+      instrument: Instrument
+      difficulty: Difficulty
+      hash: string
+    }[]
+  },
   checksums: {
     chart: {
-      mid: string | null,
-      chart: string | null,
+      mid: string | null
+      chart: string | null
     },
     archive: string
   },
   files: {
     video: {
-      highway: boolean,
+      highway: boolean
       video: boolean
     },
     image: {
-      album: boolean,
-      background: boolean,
+      album: boolean
+      background: boolean
       highway: boolean
     },
     stems: {
-      guitar: boolean,
-      bass: boolean,
-      rhythm: boolean,
-      vocals: boolean,
-      vocals_1: boolean,
-      vocals_2: boolean,
-      drums: boolean,
-      drums_1: boolean,
-      drums_2: boolean,
-      drums_3: boolean,
-      drums_4: boolean,
-      keys: boolean,
-      song: boolean,
+      guitar: boolean
+      bass: boolean
+      rhythm: boolean
+      vocals: boolean
+      vocals_1: boolean
+      vocals_2: boolean
+      drums: boolean
+      drums_1: boolean
+      drums_2: boolean
+      drums_3: boolean
+      drums_4: boolean
+      keys: boolean
+      song: boolean
       crowd: boolean
     },
     chart: {
-      mid: boolean,
-      chart: boolean,
+      mid: boolean
+      chart: boolean
     },
     config: {
-      ini: boolean,
+      ini: boolean
     }
   }
 }
