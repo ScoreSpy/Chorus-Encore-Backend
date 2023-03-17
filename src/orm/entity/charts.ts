@@ -1,352 +1,200 @@
-import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn } from 'typeorm'
+/* eslint-disable no-use-before-define */
+/* eslint-disable max-classes-per-file */
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 
-export enum ChartFormat {
-  MIDI = 1 << 0,
-  CHART = 1 << 1
-}
 
-export enum InstrumentFlags {
-  None = 0,
+export enum Instrument {
   Guitar = 1 << 0,
-  bass = 1 << 1,
-  rhythm = 1 << 2,
-  keys = 1 << 3,
-  drums = 1 << 4,
-  guitarghl = 1 << 5,
-  bassghl = 1 << 6
+  Rhythm = 1 << 1,
+  Bass = 1 << 2,
+  Drums = 1 << 3,
+  Keys = 1 << 4,
+  GuitarGHL = 1 << 5,
+  BassGHL = 1 << 6,
 }
 
-export enum DifficultyFlags {
-  None = 0,
-  Easy = 1 << 0,
-  Medium = 1 << 1,
-  Hard = 1 << 2,
-  Expert = 1 << 3
+export enum Difficulty {
+  Expert = 1 << 0,
+  Hard = 1 << 1,
+  Medium = 1 << 2,
+  Easy = 1 << 3,
 }
 
-export type ChorusDiffMapString = {
-  x: string;
-  h: string;
-  m: string;
-  e: string;
+export enum NoteIssueType {
+  FiveNoteChord = 1 << 0,
+  DifficultyForbiddenNote = 1 << 1,
+  ThreeNoteDrumChord = 1 << 2,
+  BrokenNote = 1 << 3,
+  BadSustainGap = 1 << 4,
+  BabySustain = 1 << 5,
 }
 
-export type ChorusDiffMapNumber = {
-  x: number;
-  h: number;
-  m: number;
-  e: number;
+export enum TrackIssueType {
+  NoStarPower = 1 << 0,
+  NoDrumActivationLanes = 1 << 1,
 }
 
-export type ChorusDiffMapBoolean = {
-  x: boolean;
-  h: boolean;
-  m: boolean;
-  e: boolean;
+export enum ChartIssueType {
+  UnparseableSectionsOrBadEncoding = 1 << 0,
+  NoResolution = 1 << 1,
+  NoSyncTrackSection = 1 << 2,
+  NoNotes = 1 << 3,
+  NoExpert = 1 << 4,
+  IsDefaultBPM = 1 << 5,
+  MisalignedTimeSignatures = 1 << 6,
+  NoSections = 1 << 7,
+  SmallLeadingSilence = 1 << 8,
 }
 
 @Entity()
-export class charts {
+export class Chart {
   @PrimaryGeneratedColumn()
     id!: number
 
-  @CreateDateColumn({ type: 'timestamp' })
-    created!: Date
+  @Column()
+    instruments!: Instrument
 
-  @Index('_index_snowflake')
-  @Column('bigint', { unique: true })
-    snowflake!: string
+  @Column()
+    hasSoloSections!: boolean
 
-  @Column({ type: 'int' })
-    chart_format!: ChartFormat
+  @Column()
+    hasLyrics!: boolean
 
-  @Column({ type: 'int' })
-    has_video!: boolean
+  @Column()
+    hasForcedNotes!: boolean
 
-  // INI DATA
-  @Column({ type: 'int', nullable: true })
-    ini_album_track?: number
+  @Column()
+    hasTapNotes!: boolean
 
-  @Column({ type: 'text', nullable: true })
-    ini_album?: string
+  @Column()
+    hasOpenNotes!: boolean
 
-  @Column({ type: 'text', nullable: true })
-    ini_artist?: string
+  @Column()
+    has2xKick!: boolean
 
-  @Column({ type: 'text', nullable: true })
-    ini_charter?: string
+  @OneToMany(() => Chart_NoteIssue, (noteIssue) => noteIssue.Chart, { cascade: true })
+    noteIssues!: Chart_NoteIssue[]
 
-  @Column({ type: 'int', nullable: true })
-    ini_diff_band?: number
+  @OneToMany(() => Chart_TrackIssue, (trackIssue) => trackIssue.Chart, { cascade: true })
+    trackIssues!: Chart_TrackIssue[]
 
-  @Column({ type: 'int', nullable: true })
-    ini_diff_bass?: number
+  @Column()
+    chartIssues!: number
 
-  @Column({ type: 'int', nullable: true })
-    ini_diff_bassghl?: number
+  @OneToMany(() => Chart_NoteCount, (noteCount) => noteCount.Chart, { cascade: true })
+    noteCounts!: Chart_NoteCount[]
 
-  @Column({ type: 'int', nullable: true })
-    ini_diff_drums_real?: number
+  @OneToMany(() => Chart_MaxNps, (maxNps) => maxNps.Chart, { cascade: true })
+    maxNps!: Chart_MaxNps[]
 
-  @Column({ type: 'int', nullable: true })
-    ini_diff_drums?: number
+  @OneToMany(() => Chart_Hash, (hash) => hash.Chart, { cascade: true })
+    hashes!: Chart_Hash[]
 
-  @Column({ type: 'int', nullable: true })
-    ini_diff_guitar_coop?: number
+  @Column()
+    tempoMapHash!: string
 
-  @Column({ type: 'int', nullable: true })
-    ini_diff_guitar?: number
+  @Column()
+    tempoMarkerCount!: number
 
-  @Column({ type: 'int', nullable: true })
-    ini_diff_guitarghl?: number
+  @Column()
+    length!: number
 
-  @Column({ type: 'int', nullable: true })
-    ini_diff_keys?: number
+  @Column()
+    effectiveLength!: number
+}
 
-  @Column({ type: 'int', nullable: true })
-    ini_diff_rhythm?: number
+@Entity()
+export class Chart_NoteIssue {
+  @PrimaryGeneratedColumn()
+    id!: number
 
-  @Column({ type: 'int', default: 0 })
-    ini_five_lane_drums?: boolean
+  @Column()
+    issueType!: NoteIssueType
 
-  @Column({ type: 'text', nullable: true })
-    ini_genre?: string
+  @Column()
+    tick!: number
 
-  @Column({ type: 'text', nullable: true })
-    ini_icon?: string
+  @Column()
+    time!: number
 
-  @Column({ type: 'text', nullable: true })
-    ini_loading_phrase?: string
+  @ManyToOne(() => Chart, (c) => c.noteIssues)
+    Chart!: Chart
+}
 
-  @Column({ type: 'int', default: 0 })
-    ini_modchart?: boolean
+@Entity()
+export class Chart_TrackIssue {
+  @PrimaryGeneratedColumn()
+    id!: number
 
-  @Column({ type: 'text', nullable: true })
-    ini_name?: string
+  @Column()
+    trackIssues!: TrackIssueType
 
-  @Column({ type: 'int', nullable: true })
-    ini_preview_start_time?: number
+  @ManyToOne(() => Chart, (c) => c.trackIssues)
+    Chart!: Chart
 
-  @Column({ type: 'int', default: 0 })
-    ini_pro_drums?: boolean
+  @Column()
+    instrument!: Instrument
 
-  @Column({ type: 'int', nullable: true })
-    ini_playlist_track?: number
+  @Column()
+    difficulty!: Difficulty
+}
 
-  @Column({ type: 'int', nullable: true })
-    ini_song_length?: number
+@Entity()
+export class Chart_NoteCount {
+  @PrimaryGeneratedColumn()
+    id!: number
 
-  @Column({ type: 'int', nullable: true })
-    ini_track?: number
+  @Column()
+    count!: number
 
-  @Column({ type: 'int', nullable: true })
-    ini_video_start_time?: number
+  @ManyToOne(() => Chart, (c) => c.noteCounts)
+    Chart!: Chart
 
-  @Column({ type: 'int', nullable: true })
-    ini_year?: number
+  @Column()
+    instrument!: Instrument
 
-  // CHART DATA
-  @Column({ type: 'int' })
-    chart_hasSections!: boolean
+  @Column()
+    difficulty!: Difficulty
+}
 
-  @Column({ type: 'int' })
-    chart_hasStarPower!: boolean
+@Entity()
+export class Chart_MaxNps {
+  @PrimaryGeneratedColumn()
+    id!: number
 
-  @Column({ type: 'int' })
-    chart_hasForced!: boolean
+  @Column()
+    tick!: number
 
-  @Column({ type: 'int' })
-    chart_hasSoloSections!: boolean
+  @Column()
+    time!: number
 
-  @Column({ type: 'int' })
-    chart_hasTap!: boolean
+  @Column()
+    nps!: number
 
-  @Column({ type: 'int' })
-    chart_is120!: boolean
+  @ManyToOne(() => Chart, (c) => c.maxNps)
+    Chart!: Chart
 
-  @Column({ type: 'int' })
-    chart_hasLyrics!: boolean
+  @Column()
+    instrument!: Instrument
 
-  @Column({ type: 'int' })
-    chart_hasBrokenNotes!: boolean
+  @Column()
+    difficulty!: Difficulty
+}
 
-  @Column({ type: 'int' })
-    chart_length!: number
+@Entity()
+export class Chart_Hash {
+  @PrimaryGeneratedColumn()
+    id!: number
 
-  @Column({ type: 'int' })
-    chart_effective_length!: number
+  @Column()
+    hash!: string
 
-  @Column({ type: 'int', nullable: true })
-    chart_hasOpen_guitar?: boolean
-  @Column({ type: 'int', nullable: true })
-    chart_hasOpen_bass?: boolean
-  @Column({ type: 'int', nullable: true })
-    chart_hasOpen_rhythm?: boolean
-  @Column({ type: 'int', nullable: true })
-    chart_hasOpen_keys?: boolean
-  @Column({ type: 'int', nullable: true })
-    chart_hasOpen_drums?: boolean
-  @Column({ type: 'int', nullable: true })
-    chart_hasOpen_guitarghl?: boolean
-  @Column({ type: 'int', nullable: true })
-    chart_hasOpen_bassghl?: boolean
+  @ManyToOne(() => Chart, (c) => c.hashes)
+    Chart!: Chart
 
-  // NOTE COUNT
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_guitar_e?: number
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_guitar_m?: number
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_guitar_h?: number
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_guitar_x?: number
+  @Column()
+    instrument!: Instrument
 
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_bass_e?: number
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_bass_m?: number
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_bass_h?: number
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_bass_x?: number
-
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_rhythm_e?: number
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_rhythm_m?: number
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_rhythm_h?: number
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_rhythm_x?: number
-
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_keys_e?: number
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_keys_m?: number
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_keys_h?: number
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_keys_x?: number
-
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_drums_e?: number
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_drums_m?: number
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_drums_h?: number
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_drums_x?: number
-
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_guitarghl_e?: number
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_guitarghl_m?: number
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_guitarghl_h?: number
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_guitarghl_x?: number
-
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_bassghl_e?: number
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_bassghl_m?: number
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_bassghl_h?: number
-  @Column({ type: 'int', nullable: true })
-    chart_noteCounts_bassghl_x?: number
-
-  // HASHES
-  @Index('_index_checksum')
-  @Column({ type: 'varchar', length: 50 })
-    checksum!: string
-
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_guitar_e?: string
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_guitar_m?: string
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_guitar_h?: string
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_guitar_x?: string
-
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_bass_e?: string
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_bass_m?: string
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_bass_h?: string
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_bass_x?: string
-
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_rhythm_e?: string
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_rhythm_m?: string
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_rhythm_h?: string
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_rhythm_x?: string
-
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_keys_e?: string
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_keys_m?: string
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_keys_h?: string
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_keys_x?: string
-
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_drums_e?: string
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_drums_m?: string
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_drums_h?: string
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_drums_x?: string
-
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_guitarghl_e?: string
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_guitarghl_m?: string
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_guitarghl_h?: string
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_guitarghl_x?: string
-
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_bassghl_e?: string
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_bassghl_m?: string
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_bassghl_h?: string
-  @Column({ type: 'varchar', length: 50, nullable: true })
-    chart_hashes_bassghl_x?: string
-
-  // ADDITIONAL DATA
-  @Column({ type: 'int' })
-    chart_difficultys_guitar!: DifficultyFlags
-  @Column({ type: 'int' })
-    chart_difficultys_bass!: DifficultyFlags
-  @Column({ type: 'int' })
-    chart_difficultys_rhythm!: DifficultyFlags
-  @Column({ type: 'int' })
-    chart_difficultys_keys!: DifficultyFlags
-  @Column({ type: 'int' })
-    chart_difficultys_drums!: DifficultyFlags
-  @Column({ type: 'int' })
-    chart_difficultys_guitarghl!: DifficultyFlags
-  @Column({ type: 'int' })
-    chart_difficultys_bassghl!: DifficultyFlags
-
-  @Column({ type: 'int' })
-    chart_instruments!: InstrumentFlags
-  @Column({ type: 'int' })
-    chart_instruments_e!: InstrumentFlags
-  @Column({ type: 'int' })
-    chart_instruments_m!: InstrumentFlags
-  @Column({ type: 'int' })
-    chart_instruments_h!: InstrumentFlags
-  @Column({ type: 'int' })
-    chart_instruments_x!: InstrumentFlags
+  @Column()
+    difficulty!: Difficulty
 }

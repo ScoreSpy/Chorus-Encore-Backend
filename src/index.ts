@@ -15,6 +15,7 @@ import v1Handler from './routes/api/v1/'
 import webhooks from './modules/webhooks'
 import webserverConfig from './configs/webserver'
 import ScanCE from './modules/googleDrive'
+import { test } from './modules/test'
 
 declare module 'fastify' {
   interface Session {
@@ -57,6 +58,7 @@ async function Server () {
       secure: overides.devMode ? false : sessionConfig.secure,
       maxAge: SESSION_TTL
     }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any)
 
   server.register(fileUpload, { limits: { fileSize: 50 * 1024 * 1024 } })
@@ -95,6 +97,7 @@ async function Server () {
   console.log(`server listening on http://${webserverConfig.host}:${webserverConfig.port}`)
 
   await ScanCE()
+  await test()
 
   return server
 }
