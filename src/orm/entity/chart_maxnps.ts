@@ -10,6 +10,12 @@ export class Chart_MaxNps {
     Chart!: Chart
 
   @Column()
+    instrument!: Instrument
+
+  @Column()
+    difficulty!: Difficulty
+
+  @Column()
     tick!: number
 
   @Column()
@@ -17,10 +23,4 @@ export class Chart_MaxNps {
 
   @Column()
     nps!: number
-
-  @Column()
-    instrument!: Instrument
-
-  @Column()
-    difficulty!: Difficulty
 }

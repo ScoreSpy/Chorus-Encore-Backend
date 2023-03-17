@@ -10,11 +10,11 @@ export class Chart_TrackIssue {
     Chart!: Chart
 
   @Column()
-    trackIssues!: TrackIssueType
-
-  @Column()
     instrument!: Instrument
 
   @Column()
     difficulty!: Difficulty
+
+  @Column()
+    trackIssues!: TrackIssueType
 }

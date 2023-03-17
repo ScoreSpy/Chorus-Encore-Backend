@@ -6,15 +6,15 @@ export class Chart_NoteCount {
   @PrimaryGeneratedColumn()
     id!: number
 
-  @ManyToOne(() => Chart, (c) => c.noteCounts)
-    Chart!: Chart
-
-  @Column()
-    count!: number
-
   @Column()
     instrument!: Instrument
 
   @Column()
     difficulty!: Difficulty
+
+  @ManyToOne(() => Chart, (c) => c.noteCounts)
+    Chart!: Chart
+
+  @Column()
+    count!: number
 }

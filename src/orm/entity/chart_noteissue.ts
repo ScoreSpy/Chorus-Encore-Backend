@@ -1,5 +1,6 @@
+import { Chart, Difficulty, NoteIssueType } from './charts'
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
-import { Chart, NoteIssueType } from './charts'
+import { Instrument } from '../../modules/test'
 
 @Entity()
 export class Chart_NoteIssue {
@@ -8,6 +9,12 @@ export class Chart_NoteIssue {
 
   @ManyToOne(() => Chart, (c) => c.noteIssues)
     Chart!: Chart
+
+  @Column()
+    instrument!: Instrument
+
+  @Column()
+    difficulty!: Difficulty
 
   @Column()
     issueType!: NoteIssueType

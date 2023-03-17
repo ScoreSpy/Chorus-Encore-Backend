@@ -10,11 +10,11 @@ export class Chart_Hash {
     Chart!: Chart
 
   @Column()
-    hash!: string
-
-  @Column()
     instrument!: Instrument
 
   @Column()
     difficulty!: Difficulty
+
+  @Column()
+    hash!: string
 }
