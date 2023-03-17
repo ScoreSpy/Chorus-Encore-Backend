@@ -58,11 +58,11 @@ export class Chart {
   @PrimaryGeneratedColumn()
     id!: number
 
-  @OneToOne(() => Chart_Config, (config) => config.Chart)
+  @OneToOne(() => Chart_Config, (config) => config.Chart, { cascade: true })
   @JoinColumn()
     config!: Chart_Config
 
-  @OneToOne(() => Chart_Files, (files) => files.Chart)
+  @OneToOne(() => Chart_Files, (files) => files.Chart, { cascade: true })
   @JoinColumn()
     files!: Chart_Files
 

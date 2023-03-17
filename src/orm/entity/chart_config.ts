@@ -10,7 +10,7 @@ export class Chart_Config {
     Chart!: Chart
 
   @Column({ type: 'int', nullable: true })
-    album_track?: number
+    album_track!: number | null
 
   @Column({ type: 'text', nullable: true })
     album?: string
@@ -22,34 +22,34 @@ export class Chart_Config {
     charter?: string
 
   @Column({ type: 'int', nullable: true })
-    diff_band?: number
+    diff_band!: number | null
 
   @Column({ type: 'int', nullable: true })
-    diff_bass?: number
+    diff_bass!: number | null
 
   @Column({ type: 'int', nullable: true })
-    diff_bassghl?: number
+    diff_bassghl!: number | null
 
   @Column({ type: 'int', nullable: true })
-    diff_drums_real?: number
+    diff_drums_real!: number | null
 
   @Column({ type: 'int', nullable: true })
-    diff_drums?: number
+    diff_drums!: number | null
 
   @Column({ type: 'int', nullable: true })
-    diff_guitar_coop?: number
+    diff_guitar_coop!: number | null
 
   @Column({ type: 'int', nullable: true })
-    diff_guitar?: number
+    diff_guitar!: number | null
 
   @Column({ type: 'int', nullable: true })
-    diff_guitarghl?: number
+    diff_guitarghl!: number | null
 
   @Column({ type: 'int', nullable: true })
-    diff_keys?: number
+    diff_keys!: number | null
 
   @Column({ type: 'int', nullable: true })
-    diff_rhythm?: number
+    diff_rhythm!: number | null
 
   @Column({ type: 'int', default: 0 })
     five_lane_drums!: boolean
@@ -70,23 +70,23 @@ export class Chart_Config {
     name?: string
 
   @Column({ type: 'int', nullable: true })
-    preview_start_time?: number
+    preview_start_time!: number | null
 
   @Column({ type: 'int', default: 0 })
     pro_drums!: boolean
 
   @Column({ type: 'int', nullable: true })
-    playlist_track?: number
+    playlist_track!: number | null
 
   @Column({ type: 'int', nullable: true })
-    song_length?: number
+    song_length!: number | null
 
   @Column({ type: 'int', nullable: true })
-    track?: number
+    track!: number | null
 
   @Column({ type: 'int', nullable: true })
-    video_start_time?: number
+    video_start_time!: number | null
 
   @Column({ type: 'int', nullable: true })
-    year?: number
+    year!: number | null
 }

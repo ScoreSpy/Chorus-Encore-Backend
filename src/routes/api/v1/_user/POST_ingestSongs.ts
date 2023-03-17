@@ -1,5 +1,14 @@
 import { FastifyInstance, FastifyServerOptions } from 'fastify'
-import { ChartIssueType, Difficulty, Instrument, NoteIssueType, TrackIssueType } from '../../../../orm/entity/charts'
+import { StringToBooleanOrNull, StringToNumberOrNull } from '../../../../modules/converters'
+import database from '../../../../modules/database'
+import { Chart, ChartIssueType, Difficulty, Instrument, NoteIssueType, TrackIssueType } from '../../../../orm/entity/charts'
+import { Chart_Config } from '../../../../orm/entity/chart_config'
+import { Chart_Files } from '../../../../orm/entity/chart_files'
+import { Chart_Hash } from '../../../../orm/entity/chart_hash'
+import { Chart_MaxNps } from '../../../../orm/entity/chart_maxnps'
+import { Chart_NoteCount } from '../../../../orm/entity/chart_notecount'
+import { Chart_NoteIssue } from '../../../../orm/entity/chart_noteissue'
+import { Chart_TrackIssue } from '../../../../orm/entity/chart_trackissue'
 
 const route = '/ingestSongs'
 const schema = {
@@ -343,6 +352,134 @@ export default function POST_ingestSongs (server: FastifyInstance, options: Fast
   server.post<{ Body: { songs: SongData[] } }>(route, { preHandler: [], schema }, async (req, res) => {
     console.log(req.body)
     console.log('owo')
+
+    for (const chart of req.body.songs) {
+      console.log(chart)
+
+      const entry = new Chart()
+      entry.instruments = chart.chartData.instruments
+      entry.hasSoloSections = chart.chartData.hasSoloSections
+      entry.hasLyrics = chart.chartData.hasLyrics
+      entry.hasForcedNotes = chart.chartData.hasForcedNotes
+      entry.hasTapNotes = chart.chartData.hasTapNotes
+      entry.hasOpenNotes = chart.chartData.hasOpenNotes
+      entry.has2xKick = chart.chartData.has2xKick
+      entry.chartIssues = chart.chartData.chartIssues
+      entry.tempoMapHash = chart.chartData.tempoMapHash
+      entry.tempoMarkerCount = chart.chartData.tempoMarkerCount
+      entry.length = chart.chartData.length
+      entry.effectiveLength = chart.chartData.effectiveLength
+
+      entry.noteIssues = []
+      for (const data of chart.chartData.noteissues) {
+        const query = new Chart_NoteIssue()
+        query.instrument = data.instrument
+        query.difficulty = data.difficulty
+        query.issueType = data.issueType
+        query.tick = data.tick
+        query.time = data.time
+        entry.noteIssues.push(query)
+      }
+
+      entry.trackIssues = []
+      for (const data of chart.chartData.trackIssues) {
+        const query = new Chart_TrackIssue()
+        query.instrument = data.instrument
+        query.difficulty = data.difficulty
+        query.trackIssues = data.trackIssues
+        entry.trackIssues.push(query)
+      }
+
+      entry.noteCounts = []
+      for (const data of chart.chartData.noteCounts) {
+        const query = new Chart_NoteCount()
+        query.instrument = data.instrument
+        query.difficulty = data.difficulty
+        query.count = data.count
+        entry.noteCounts.push(query)
+      }
+
+      entry.maxNps = []
+      for (const data of chart.chartData.maxNps) {
+        const query = new Chart_MaxNps()
+        query.instrument = data.instrument
+        query.difficulty = data.difficulty
+        query.tick = data.tick
+        query.time = data.time
+        query.nps = data.nps
+        entry.maxNps.push(query)
+      }
+
+      entry.hashes = []
+      for (const data of chart.chartData.hashes) {
+        const query = new Chart_Hash()
+        query.instrument = data.instrument
+        query.difficulty = data.difficulty
+        query.hash = data.hash
+        entry.hashes.push(query)
+      }
+
+      const files = new Chart_Files()
+      files.chart_chart = chart.files.chart.chart
+      files.chart_mid = chart.files.chart.mid
+      files.config_ini = chart.files.config.ini
+      files.image_album = chart.files.image.album
+      files.image_background = chart.files.image.background
+      files.image_highway = chart.files.image.highway
+      files.stems_bass = chart.files.stems.bass
+      files.stems_crowd = chart.files.stems.crowd
+      files.stems_drums = chart.files.stems.drums
+      files.stems_drums_1 = chart.files.stems.drums_1
+      files.stems_drums_2 = chart.files.stems.drums_2
+      files.stems_drums_3 = chart.files.stems.drums_3
+      files.stems_drums_4 = chart.files.stems.drums_4
+      files.stems_guitar = chart.files.stems.guitar
+      files.stems_keys = chart.files.stems.keys
+      files.stems_rhythm = chart.files.stems.rhythm
+      files.stems_song = chart.files.stems.song
+      files.stems_vocals = chart.files.stems.vocals
+      files.stems_vocals_1 = chart.files.stems.vocals_1
+      files.stems_vocals_2 = chart.files.stems.vocals_2
+      files.video_highway = chart.files.video.highway
+      files.video_video = chart.files.video.video
+      entry.files = files
+
+      const config = new Chart_Config()
+      config.album_track = StringToNumberOrNull(chart.iniData.album_track)
+      config.album = chart.iniData.album
+      config.artist = chart.iniData.artist
+      config.charter = chart.iniData.charter
+      config.diff_band = StringToNumberOrNull(chart.iniData.diff_band)
+      config.diff_bass = StringToNumberOrNull(chart.iniData.diff_bass)
+      config.diff_bassghl = StringToNumberOrNull(chart.iniData.diff_bassghl)
+      config.diff_drums_real = StringToNumberOrNull(chart.iniData.diff_drums_real)
+      config.diff_drums = StringToNumberOrNull(chart.iniData.diff_drums)
+      config.diff_guitar_coop = StringToNumberOrNull(chart.iniData.diff_guitar_coop)
+      config.diff_guitar = StringToNumberOrNull(chart.iniData.diff_guitar)
+      config.diff_guitarghl = StringToNumberOrNull(chart.iniData.diff_guitarghl)
+      config.diff_keys = StringToNumberOrNull(chart.iniData.diff_keys)
+      config.diff_rhythm = StringToNumberOrNull(chart.iniData.diff_rhythm)
+      config.five_lane_drums = StringToBooleanOrNull(chart.iniData.five_lane_drums) || false
+      config.genre = chart.iniData.genre
+      config.icon = chart.iniData.icon
+      config.loading_phrase = chart.iniData.loading_phrase
+      config.modchart = StringToBooleanOrNull(chart.iniData.modchart) || false
+      config.name = chart.iniData.name
+      config.preview_start_time = StringToNumberOrNull(chart.iniData.preview_start_time)
+      config.pro_drums = StringToBooleanOrNull(chart.iniData.pro_drums) || false
+      config.playlist_track = StringToNumberOrNull(chart.iniData.playlist_track)
+      config.song_length = StringToNumberOrNull(chart.iniData.song_length)
+      config.track = StringToNumberOrNull(chart.iniData.track)
+      config.video_start_time = StringToNumberOrNull(chart.iniData.video_start_time)
+      config.year = StringToNumberOrNull(chart.iniData.year)
+      entry.config = config
+
+      // save the Chart object
+      const savedChart = await database.chart.save(entry)
+      console.log(savedChart)
+    }
+
+
     return res.send({ response: `Ingested ${req.body.songs.length} songs` })
   })
 
