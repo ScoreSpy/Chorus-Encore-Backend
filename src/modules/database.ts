@@ -18,6 +18,8 @@ class Database {
   chart_NoteIssue!: Repository<charts.Chart_NoteIssue>
   chart_TrackIssue!: Repository<charts.Chart_TrackIssue>
   chart_Hash!: Repository<charts.Chart_Hash>
+  chart_Files!: Repository<charts.Chart_Files>
+  chart_Config!: Repository<charts.Chart_Config>
 
   system_logs!: Repository<system_logs>
 
@@ -42,6 +44,8 @@ class Database {
         charts.Chart_NoteIssue,
         charts.Chart_TrackIssue,
         charts.Chart_Hash,
+        charts.Chart_Files,
+        charts.Chart_Config,
 
         system_logs
       ],
@@ -64,6 +68,8 @@ class Database {
     this.chart_NoteIssue = this.manager.getRepository(charts.Chart_NoteIssue)
     this.chart_TrackIssue = this.manager.getRepository(charts.Chart_TrackIssue)
     this.chart_Hash = this.manager.getRepository(charts.Chart_Hash)
+    this.chart_Files = this.manager.getRepository(charts.Chart_Files)
+    this.chart_Config = this.manager.getRepository(charts.Chart_Config)
 
     this.system_logs = this.manager.getRepository(system_logs)
 

@@ -72,24 +72,6 @@ export class Chart {
   @Column()
     has2xKick!: boolean
 
-  @OneToMany(() => Chart_NoteIssue, (noteIssue) => noteIssue.Chart, { cascade: true })
-    noteIssues!: Chart_NoteIssue[]
-
-  @OneToMany(() => Chart_TrackIssue, (trackIssue) => trackIssue.Chart, { cascade: true })
-    trackIssues!: Chart_TrackIssue[]
-
-  @Column()
-    chartIssues!: number
-
-  @OneToMany(() => Chart_NoteCount, (noteCount) => noteCount.Chart, { cascade: true })
-    noteCounts!: Chart_NoteCount[]
-
-  @OneToMany(() => Chart_MaxNps, (maxNps) => maxNps.Chart, { cascade: true })
-    maxNps!: Chart_MaxNps[]
-
-  @OneToMany(() => Chart_Hash, (hash) => hash.Chart, { cascade: true })
-    hashes!: Chart_Hash[]
-
   @Column()
     tempoMapHash!: string
 
@@ -101,6 +83,31 @@ export class Chart {
 
   @Column()
     effectiveLength!: number
+
+  @Column()
+    chartIssues!: number
+
+  // relations
+  @OneToMany(() => Chart_NoteIssue, (noteIssue) => noteIssue.Chart, { cascade: true })
+    noteIssues!: Chart_NoteIssue[]
+
+  @OneToMany(() => Chart_TrackIssue, (trackIssue) => trackIssue.Chart, { cascade: true })
+    trackIssues!: Chart_TrackIssue[]
+
+  @OneToMany(() => Chart_NoteCount, (noteCount) => noteCount.Chart, { cascade: true })
+    noteCounts!: Chart_NoteCount[]
+
+  @OneToMany(() => Chart_MaxNps, (maxNps) => maxNps.Chart, { cascade: true })
+    maxNps!: Chart_MaxNps[]
+
+  @OneToMany(() => Chart_Hash, (hash) => hash.Chart, { cascade: true })
+    hashes!: Chart_Hash[]
+
+  @OneToMany(() => Chart_Files, (files) => files.Chart, { cascade: true })
+    files!: Chart_Files
+
+  @OneToMany(() => Chart_Config, (config) => config.Chart, { cascade: true })
+    config!: Chart_Config
 }
 
 @Entity()
@@ -197,4 +204,175 @@ export class Chart_Hash {
 
   @Column()
     difficulty!: Difficulty
+}
+
+@Entity()
+export class Chart_Config {
+  @PrimaryGeneratedColumn()
+    id!: number
+
+  @Column({ type: 'int', nullable: true })
+    album_track?: number
+
+  @Column({ type: 'text', nullable: true })
+    album?: string
+
+  @Column({ type: 'text', nullable: true })
+    artist?: string
+
+  @Column({ type: 'text', nullable: true })
+    charter?: string
+
+  @Column({ type: 'int', nullable: true })
+    diff_band?: number
+
+  @Column({ type: 'int', nullable: true })
+    diff_bass?: number
+
+  @Column({ type: 'int', nullable: true })
+    diff_bassghl?: number
+
+  @Column({ type: 'int', nullable: true })
+    diff_drums_real?: number
+
+  @Column({ type: 'int', nullable: true })
+    diff_drums?: number
+
+  @Column({ type: 'int', nullable: true })
+    diff_guitar_coop?: number
+
+  @Column({ type: 'int', nullable: true })
+    diff_guitar?: number
+
+  @Column({ type: 'int', nullable: true })
+    diff_guitarghl?: number
+
+  @Column({ type: 'int', nullable: true })
+    diff_keys?: number
+
+  @Column({ type: 'int', nullable: true })
+    diff_rhythm?: number
+
+  @Column({ type: 'int', default: 0 })
+    five_lane_drums!: boolean
+
+  @Column({ type: 'text', nullable: true })
+    genre?: string
+
+  @Column({ type: 'text', nullable: true })
+    icon?: string
+
+  @Column({ type: 'text', nullable: true })
+    loading_phrase?: string
+
+  @Column({ type: 'int', default: 0 })
+    modchart!: boolean
+
+  @Column({ type: 'text', nullable: true })
+    name?: string
+
+  @Column({ type: 'int', nullable: true })
+    preview_start_time?: number
+
+  @Column({ type: 'int', default: 0 })
+    pro_drums!: boolean
+
+  @Column({ type: 'int', nullable: true })
+    playlist_track?: number
+
+  @Column({ type: 'int', nullable: true })
+    song_length?: number
+
+  @Column({ type: 'int', nullable: true })
+    track?: number
+
+  @Column({ type: 'int', nullable: true })
+    video_start_time?: number
+
+  @Column({ type: 'int', nullable: true })
+    year?: number
+
+  @ManyToOne(() => Chart, (c) => c.config)
+    Chart!: Chart
+}
+
+
+@Entity()
+export class Chart_Files {
+  @PrimaryGeneratedColumn()
+    id!: number
+
+  // videos
+  @Column({ type: 'int', default: 0 })
+    video_highway!: boolean
+
+  @Column({ type: 'int', default: 0 })
+    video_video!: boolean
+
+  // images
+  @Column({ type: 'int', default: 0 })
+    image_album!: boolean
+
+  @Column({ type: 'int', default: 0 })
+    image_background!: boolean
+
+  @Column({ type: 'int', default: 0 })
+    image_highway!: boolean
+
+  // stems
+  @Column({ type: 'int', default: 0 })
+    stems_guitar!: boolean
+
+  @Column({ type: 'int', default: 0 })
+    stems_bass!: boolean
+
+  @Column({ type: 'int', default: 0 })
+    stems_rhythm!: boolean
+
+  @Column({ type: 'int', default: 0 })
+    stems_vocals!: boolean
+
+  @Column({ type: 'int', default: 0 })
+    stems_vocals_1!: boolean
+
+  @Column({ type: 'int', default: 0 })
+    stems_vocals_2!: boolean
+
+  @Column({ type: 'int', default: 0 })
+    stems_drums!: boolean
+
+  @Column({ type: 'int', default: 0 })
+    stems_drums_1!: boolean
+
+  @Column({ type: 'int', default: 0 })
+    stems_drums_2!: boolean
+
+  @Column({ type: 'int', default: 0 })
+    stems_drums_3!: boolean
+
+  @Column({ type: 'int', default: 0 })
+    stems_drums_4!: boolean
+
+  @Column({ type: 'int', default: 0 })
+    stems_keys!: boolean
+
+  @Column({ type: 'int', default: 0 })
+    stems_song!: boolean
+
+  @Column({ type: 'int', default: 0 })
+    stems_crowd!: boolean
+
+  // chart
+  @Column({ type: 'int', default: 0 })
+    chart_mid!: boolean
+
+  @Column({ type: 'int', default: 0 })
+    chart_chart!: boolean
+
+  // config
+  @Column({ type: 'int', default: 0 })
+    config_ini!: boolean
+
+  @ManyToOne(() => Chart, (c) => c.files)
+    Chart!: Chart
 }
