@@ -1,11 +1,13 @@
 import { createClient } from 'redis'
 import database from './modules/database'
+import discordConfig from './configs/discord'
 import elastic from './modules/elastic'
 import fastify from 'fastify'
 import fastifyCookie from '@fastify/cookie'
 import fastifySession from '@fastify/session'
 import fileUpload from 'fastify-file-upload'
 import logger from './modules/log'
+import oauthPlugin, { OAuth2Namespace } from '@fastify/oauth2'
 import overides from './configs/json/overides.json'
 import redisModule from './modules/redis'
 import RedisStore from 'connect-redis'
@@ -15,7 +17,15 @@ import v1Handler from './routes/api/v1/'
 import webhooks from './modules/webhooks'
 import webserverConfig from './configs/webserver'
 
+// this is only temp, please dont judge me q.q
+// eslint-disable-next-line no-new-func
+const importDynamic = new Function('modulePath', 'return import(modulePath)')
+
 declare module 'fastify' {
+  interface FastifyInstance {
+    facebookOAuth2: OAuth2Namespace
+    myCustomOAuth2: OAuth2Namespace
+  }
   interface Session {
     isAuthenticated: boolean
   }
@@ -36,6 +46,10 @@ const redisStore = new RedisStore({
 
 async function Server () {
   const server = fastify({ trustProxy: true, bodyLimit: BODY_SIZE_LIMIT, maxParamLength: Number.MAX_SAFE_INTEGER })
+
+  const owo = await importDynamic('fastify-print-routes')
+  await server.register(owo.default)
+
 
   server.addHook('onRequest', (request, reply, done) => done())
 
@@ -91,6 +105,17 @@ async function Server () {
   await scheduler.init()
 
   server.register(v1Handler, { prefix: '/api/v1' })
+
+  server.register(oauthPlugin, {
+    name: 'discordOAuth2',
+    scope: ['identify'],
+    credentials: {
+      client: { id: discordConfig.id, secret: discordConfig.secret },
+      auth: oauthPlugin.DISCORD_CONFIGURATION
+    },
+    startRedirectPath: '/api/v1/login/discord',
+    callbackUri: discordConfig.callback
+  })
 
   server.listen({ host: webserverConfig.host, port: webserverConfig.port })
   console.log(`server listening on http://${webserverConfig.host}:${webserverConfig.port}`)
