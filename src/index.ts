@@ -13,6 +13,7 @@ import sessionConfig from './configs/session'
 import v1Handler from './routes/api/v1/'
 import webhooks from './modules/webhooks'
 import webserverConfig from './configs/webserver'
+import { UserLevel } from './orm/entity/users'
 
 // this is only temp, please dont judge me q.q
 // eslint-disable-next-line no-new-func
@@ -25,9 +26,9 @@ declare module 'fastify' {
   interface Session {
     isAuthenticated: boolean,
     user: {
-      id: string,
-      username: string,
-      discriminator: string
+      snowflake: string,
+      displayName: string,
+      userLevel: UserLevel
     }
   }
 }

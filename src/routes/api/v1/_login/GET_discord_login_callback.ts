@@ -1,5 +1,6 @@
 import { FastifyInstance, FastifyServerOptions } from 'fastify'
 import { me } from './../../../../modules/discord'
+import database from './../../../../modules/database'
 
 const route = '/discord/callback'
 const schema = {
@@ -24,14 +25,17 @@ export default function GET_discord_login (server: FastifyInstance, options: Fas
     const data = await server.discordOAuth2.getAccessTokenFromAuthorizationCodeFlow(req)
     const user = await me(data.token.access_token)
 
+    const chorusUser = await database.user.findOneBy({ snowflake: user.id })
+    if (!chorusUser) { return res.redirect('/') }
+
     req.session.isAuthenticated = true
     req.session.user = {
-      id: user.id,
-      username: user.username,
-      discriminator: user.discriminator
+      snowflake: chorusUser.snowflake,
+      displayName: chorusUser.display_name,
+      userLevel: chorusUser.user_level
     }
 
-    res.redirect('/')
+    return res.redirect('/')
   })
 
   next()

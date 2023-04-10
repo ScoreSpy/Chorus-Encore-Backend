@@ -15,6 +15,8 @@ import { Chart_Hash } from './../orm/entity/chart_hash'
 import { Chart_Files } from './../orm/entity/chart_files'
 import { Chart_Config } from './../orm/entity/chart_config'
 
+import { User } from './../orm/entity/users'
+
 class Database {
   ready: boolean
 
@@ -28,6 +30,8 @@ class Database {
   chart_Hash!: Repository<Chart_Hash>
   chart_Files!: Repository<Chart_Files>
   chart_Config!: Repository<Chart_Config>
+
+  user!: Repository<User>
 
   system_logs!: Repository<system_logs>
 
@@ -55,6 +59,8 @@ class Database {
         Chart_Files,
         Chart_Config,
 
+        User,
+
         system_logs
       ],
       bigNumberStrings: false,
@@ -78,6 +84,8 @@ class Database {
     this.chart_Hash = this.manager.getRepository(Chart_Hash)
     this.chart_Files = this.manager.getRepository(Chart_Files)
     this.chart_Config = this.manager.getRepository(Chart_Config)
+
+    this.user = this.manager.getRepository(User)
 
     this.system_logs = this.manager.getRepository(system_logs)
 
