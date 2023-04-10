@@ -1,4 +1,3 @@
-import { createClient } from 'redis'
 import database from './modules/database'
 import discordConfig from './configs/discord'
 import elastic from './modules/elastic'
@@ -9,8 +8,6 @@ import fileUpload from 'fastify-file-upload'
 import logger from './modules/log'
 import oauthPlugin, { OAuth2Namespace } from '@fastify/oauth2'
 import overides from './configs/json/overides.json'
-import redisModule from './modules/redis'
-import RedisStore from 'connect-redis'
 import scheduler from './modules/scheduler'
 import sessionConfig from './configs/session'
 import v1Handler from './routes/api/v1/'
@@ -23,11 +20,15 @@ const importDynamic = new Function('modulePath', 'return import(modulePath)')
 
 declare module 'fastify' {
   interface FastifyInstance {
-    facebookOAuth2: OAuth2Namespace
-    myCustomOAuth2: OAuth2Namespace
+    discordOAuth2: OAuth2Namespace
   }
   interface Session {
-    isAuthenticated: boolean
+    isAuthenticated: boolean,
+    user: {
+      id: string,
+      username: string,
+      discriminator: string
+    }
   }
 }
 
@@ -35,14 +36,6 @@ const log = logger.createContext('server')
 
 const SESSION_TTL = (24 * 60 * 60 * 1000) * 15
 const BODY_SIZE_LIMIT = 50 * 1024 * 1024
-
-const redisClient = createClient({ url: 'redis://127.0.0.1:6379', database: 9 })
-// const RedisStore = connectRedis(fastifySession as any)
-
-const redisStore = new RedisStore({
-  client: redisClient,
-  prefix: 'CE_'
-})
 
 async function Server () {
   const server = fastify({ trustProxy: true, bodyLimit: BODY_SIZE_LIMIT, maxParamLength: Number.MAX_SAFE_INTEGER })
@@ -64,7 +57,6 @@ async function Server () {
 
   server.register(fastifySession, {
     secret: sessionConfig.secret,
-    store: redisStore,
     saveUninitialized: false,
     cookieName: 'ChorusEncore',
     cookie: {
@@ -91,9 +83,6 @@ async function Server () {
       reply.code(500).send('Registered Error')
     }
   })
-
-  console.log('init redisModule')
-  redisModule.init()
 
   console.log('init database')
   await database.init()

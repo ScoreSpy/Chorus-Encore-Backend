@@ -1,4 +1,5 @@
 import { FastifyInstance, FastifyServerOptions } from 'fastify'
+import { me } from './../../../../modules/discord'
 
 const route = '/discord/callback'
 const schema = {
@@ -9,7 +10,9 @@ const schema = {
     200: {
       type: 'object',
       properties: {
-        access_token: { type: 'string' }
+        id: { type: 'string' },
+        username: { type: 'string' },
+        discriminator: { type: 'string' }
       }
     }
   }
@@ -18,16 +21,17 @@ const schema = {
 export default function GET_discord_login (server: FastifyInstance, options: FastifyServerOptions, next: CallableFunction) {
   // eslint-disable-next-line require-await
   server.get(route, { preHandler: [], schema }, async (req, res) => {
-    const { token } = await server.facebookOAuth2.getAccessTokenFromAuthorizationCodeFlow(req)
+    const data = await server.discordOAuth2.getAccessTokenFromAuthorizationCodeFlow(req)
+    const user = await me(data.token.access_token)
 
-    console.log(token.access_token)
+    req.session.isAuthenticated = true
+    req.session.user = {
+      id: user.id,
+      username: user.username,
+      discriminator: user.discriminator
+    }
 
-    /*
-     * if later you need to refresh the token you can use
-     * const { token: newToken } = await this.getNewAccessTokenUsingRefreshToken(token.refresh_token)
-     */
-
-    res.send({ access_token: token.access_token })
+    res.redirect('/')
   })
 
   next()
