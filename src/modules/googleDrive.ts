@@ -1,6 +1,7 @@
 import { drive_v3, google } from 'googleapis'
 import googleCreds from './../configs/google'
 import { deleteMissingFilesFromDb, insertNewFilesToDb } from './database/archives'
+import database from './database'
 
 export interface File {
   id: string
@@ -56,15 +57,15 @@ export default async function ScanCE () {
 
   const authClient = await auth.getClient()
   const drive = google.drive({ version: 'v3', auth: authClient })
+  const drives = await database.user.find({ select: ['drive_id'] })
 
-  const rootFolderId = '10X6qBMXU21HBmQUQrsq67pZQwi5IR8Ye'
-  const extension = 'ce'
+  for (let i = 0; i < drives.length; i++) {
+    const ceFiles = await findFilesWithExtension(drives[i].drive_id, 'ce', drive)
 
-  const ceFiles = await findFilesWithExtension(rootFolderId, extension, drive)
+    console.log(`Found ${ceFiles.length} files with the ".ce" extension.`)
+    console.log(ceFiles)
 
-  console.log(`Found ${ceFiles.length} files with the ".ce" extension.`)
-  console.log(ceFiles)
-
-  await updateEntries(ceFiles)
+    await updateEntries(ceFiles)
+  }
 }
 

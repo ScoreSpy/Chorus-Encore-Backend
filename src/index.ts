@@ -14,6 +14,7 @@ import v1Handler from './routes/api/v1/'
 import webhooks from './modules/webhooks'
 import webserverConfig from './configs/webserver'
 import { UserLevel } from './orm/entity/users'
+import ScanCE from './modules/googleDrive'
 
 // this is only temp, please dont judge me q.q
 // eslint-disable-next-line no-new-func
@@ -109,6 +110,8 @@ async function Server () {
 
   server.listen({ host: webserverConfig.host, port: webserverConfig.port })
   console.log(`server listening on http://${webserverConfig.host}:${webserverConfig.port}`)
+
+  ScanCE().catch(console.error)
 
   return server
 }
