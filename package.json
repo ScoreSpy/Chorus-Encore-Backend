@@ -32,7 +32,8 @@
     "googleapis": "^113.0.0",
     "mysql": "^2.18.1",
     "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.3.12"
+    "typeorm": "^0.3.12",
+    "uuid-v4": "^0.1.0"
   },
   "devDependencies": {
     "@types/node": "^18.15.3",

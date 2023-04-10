@@ -24,6 +24,9 @@ export class User {
   @Column({ type: 'varchar', length: 50 })
     drive_id!: string
 
+  @Column({ type: 'varchar', length: 50, unique: true })
+    api!: string
+
   @CreateDateColumn({ type: 'datetime' })
     created!: Date
 
